@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -23,14 +24,20 @@ namespace Vmd2.Presentation
         private void FormMain_Load(object sender, EventArgs e)
         {
             Image3D image;
-            
+
             using (var reader = new DicomReader(TestData.GetPath("vtkBrain")))
             {
                 image = reader.ReadImage3D();
             }
 
             display = new DisplayImage(image.LengthX, image.LengthY);
+
             var tf = new TransferFunction1D();
+            tf.Add(0, Color.Black);
+            tf.Add(200, Color.Blue);
+            tf.Add(600, Color.Red);
+            tf.Add(1100, Color.Yellow);
+
             renderer = new TransferFunctionRenderer(image, display, tf);
 
             scrollBarSlice.Maximum = image.LengthZ - 1;
@@ -42,9 +49,15 @@ namespace Vmd2.Presentation
         private void Render()
         {
             renderer.Slice = scrollBarSlice.Value;
+
+            DateTime start = DateTime.Now;
+
             renderer.Render();
             display.Update();
             pictureBoxDisplay.Invalidate();
+
+            DateTime end = DateTime.Now;
+            Debug.WriteLine("Rendered in " + (end - start).TotalMilliseconds + "ms");
         }
 
         private DisplayImage display;
