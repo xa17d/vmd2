@@ -29,8 +29,8 @@ namespace Vmd2.Presentation
 
             //string testPath = @"MANIX\CER-CT\ANGIO CT";
             //string testPath = @"BRAINIX\SOUS - 702";
-            string testPath = @"BRAINIX\T2W-FE-EPI - 501";
-            //string testPath = @"vtkBrain";
+            //string testPath = @"BRAINIX\T2W-FE-EPI - 501";
+            string testPath = @"vtkBrain";
 
             double min, max;
             using (var reader = new DicomReader(TestData.GetPath(testPath)))
@@ -45,8 +45,8 @@ namespace Vmd2.Presentation
 
             var tf = new TransferFunction1D();
             tf.Add(0, Color.Black);
-            tf.Add(max * 0.4, Color.Blue);
-            tf.Add(max * 0.8, Color.Red);
+            tf.Add(max * 0.2, Color.Blue);
+            tf.Add(max * 0.6, Color.Red);
             tf.Add(max, Color.Yellow);
 
             renderer = new TransferFunctionRenderer(image, display, tf);
@@ -54,7 +54,7 @@ namespace Vmd2.Presentation
             scrollBarSlice.Maximum = image.LengthZ - 1;
             pictureBoxDisplay.Image = display.GetBitmap();
 
-            Render();
+            //Render();
         }
 
         private void Render()
