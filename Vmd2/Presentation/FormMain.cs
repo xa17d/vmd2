@@ -36,7 +36,7 @@ namespace Vmd2.Presentation
             tf.Add(0, Color.Black);
             tf.Add(200, Color.Blue);
             tf.Add(600, Color.Red);
-            tf.Add(1100, Color.Yellow);
+            tf.Add(1000, Color.Yellow);
 
             renderer = new TransferFunctionRenderer(image, display, tf);
 
@@ -57,7 +57,7 @@ namespace Vmd2.Presentation
             pictureBoxDisplay.Invalidate();
 
             DateTime end = DateTime.Now;
-            Debug.WriteLine("Rendered in " + (end - start).TotalMilliseconds + "ms");
+            Debug.WriteLine("Rendered slice " + renderer.Slice + " in " + (end - start).TotalMilliseconds + "ms");
         }
 
         private DisplayImage display;

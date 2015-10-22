@@ -45,6 +45,7 @@
             // scrollBarSlice
             // 
             this.scrollBarSlice.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.scrollBarSlice.LargeChange = 1;
             this.scrollBarSlice.Location = new System.Drawing.Point(0, 279);
             this.scrollBarSlice.Name = "scrollBarSlice";
             this.scrollBarSlice.Size = new System.Drawing.Size(337, 17);

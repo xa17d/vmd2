@@ -51,9 +51,9 @@ namespace Vmd2.Processing.TransferFunctions
                 item = item.Next;
             }
 
-            if (value >= item.Value)
+            if (item == null)
             {
-                return item.Color;
+                return last.Color;
             }
             else if (value < last.Value)
             {
