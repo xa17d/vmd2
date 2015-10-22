@@ -1,9 +1,11 @@
 ﻿using Kitware.VTK;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vmd2.Logging;
 using Vmd2.Processing;
 
 namespace Vmd2.DataAccess
@@ -12,6 +14,9 @@ namespace Vmd2.DataAccess
     {
         public DicomReader(string directoryPath)
         {
+            this.MinValue = double.NaN;
+            this.MaxValue = double.NaN;
+
             reader = vtkDICOMImageReader.New();
             reader.SetDirectoryName(directoryPath);
             reader.Update();
@@ -24,10 +29,13 @@ namespace Vmd2.DataAccess
 
         private vtkDICOMImageReader reader;
 
+        public double MinValue { get; private set; }
+        public double MaxValue { get; private set; }
+
         public Image3D ReadImage3D()
         {
             // based on http://www.vtk.org/Wiki/VTK/Examples/Cxx/ImageData/IterateImageData
-
+            
             var imageData = reader.GetOutput();
             int[] dimensions = imageData.GetDimensions();
 
@@ -37,18 +45,35 @@ namespace Vmd2.DataAccess
             }
 
             var image = new Image3D(dimensions[2], dimensions[1], dimensions[0]);
-            
-            for (int z = 0; z < dimensions[2]; z++)
+
+            double min = double.MaxValue;
+            double max = double.MinValue;
+
+            using (var progress = Log.P("Read in image..."))
             {
-                for (int y = 0; y < dimensions[1]; y++)
+                for (int z = 0; z < dimensions[2]; z++)
                 {
-                    for (int x = 0; x < dimensions[0]; x++)
+                    for (int y = 0; y < dimensions[1]; y++)
                     {
-                        double voxel = imageData.GetScalarComponentAsDouble(x, y, z, 0);
-                        image[x, y, z] = voxel;
+                        for (int x = 0; x < dimensions[0]; x++)
+                        {
+                            double voxel = imageData.GetScalarComponentAsDouble(x, y, z, 0);
+                            image[x, y, z] = voxel;
+
+                            min = Math.Min(min, voxel);
+                            max = Math.Max(max, voxel);
+                        }
                     }
+
+                    progress.Update((z / (double)image.LengthZ));
                 }
             }
+
+            Debug.WriteLine("min: " + min);
+            Debug.WriteLine("max: " + max);
+
+            this.MinValue = min;
+            this.MaxValue = max;
 
             return image;
         }

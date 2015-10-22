@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Vmd2.DataAccess;
+using Vmd2.Logging;
 using Vmd2.Processing;
 using Vmd2.Processing.TransferFunctions;
 
@@ -19,24 +20,34 @@ namespace Vmd2.Presentation
         public FormMain()
         {
             InitializeComponent();
+            Log.Control = controlLog1;
         }
 
         private void FormMain_Load(object sender, EventArgs e)
         {
             Image3D image;
 
-            using (var reader = new DicomReader(TestData.GetPath("vtkBrain")))
+            //string testPath = @"MANIX\CER-CT\ANGIO CT";
+            //string testPath = @"BRAINIX\SOUS - 702";
+            string testPath = @"BRAINIX\T2W-FE-EPI - 501";
+            //string testPath = @"vtkBrain";
+
+            double min, max;
+            using (var reader = new DicomReader(TestData.GetPath(testPath)))
             {
                 image = reader.ReadImage3D();
+
+                min = reader.MinValue;
+                max = reader.MaxValue;
             }
 
             display = new DisplayImage(image.LengthX, image.LengthY);
 
             var tf = new TransferFunction1D();
             tf.Add(0, Color.Black);
-            tf.Add(200, Color.Blue);
-            tf.Add(600, Color.Red);
-            tf.Add(1000, Color.Yellow);
+            tf.Add(max * 0.4, Color.Blue);
+            tf.Add(max * 0.8, Color.Red);
+            tf.Add(max, Color.Yellow);
 
             renderer = new TransferFunctionRenderer(image, display, tf);
 
@@ -48,16 +59,14 @@ namespace Vmd2.Presentation
 
         private void Render()
         {
-            renderer.Slice = scrollBarSlice.Value;
+            using (var progress = Log.P("Render slice " + renderer.Slice))
+            {
+                renderer.Slice = scrollBarSlice.Value;
 
-            DateTime start = DateTime.Now;
-
-            renderer.Render();
-            display.Update();
-            pictureBoxDisplay.Invalidate();
-
-            DateTime end = DateTime.Now;
-            Debug.WriteLine("Rendered slice " + renderer.Slice + " in " + (end - start).TotalMilliseconds + "ms");
+                renderer.Render();
+                display.Update();
+                pictureBoxDisplay.Invalidate();
+            }
         }
 
         private DisplayImage display;
