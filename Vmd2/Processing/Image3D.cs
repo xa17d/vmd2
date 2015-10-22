@@ -8,7 +8,7 @@ namespace Vmd2.Processing
 {
     class Image3D
     {
-        private double[,,] data;
+        private short[,,] data;
 
         public int LengthX { get; private set; }
         public int LengthY { get; private set; }
@@ -16,7 +16,7 @@ namespace Vmd2.Processing
 
         public Image3D(int lengthZ, int lengthY, int lengthX)
         {
-            data = new double[lengthX, lengthY, lengthZ];
+            data = new short[lengthX, lengthY, lengthZ];
             this.LengthX = lengthX;
             this.LengthY = lengthY;
             this.LengthZ = lengthZ;
@@ -25,7 +25,7 @@ namespace Vmd2.Processing
         public double this[int x, int y, int z]
         {
             get { return data[x, y, z]; }
-            set { data[x, y, z] = value; }
+            set { data[x, y, z] = (short)value; }
         }
     }
 }
