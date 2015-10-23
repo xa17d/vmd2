@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Vmd2.Processing
 {
@@ -13,52 +14,53 @@ namespace Vmd2.Processing
     {
         public DisplayImage(int width, int height)
         {
-            bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            bitmap = new WriteableBitmap(width, height, 96,96, PixelFormats.Bgra32, BitmapPalettes.BlackAndWhite);
+            stride = bitmap.PixelWidth * (bitmap.Format.BitsPerPixel / 8);
             CopyToBuffer();
         }
 
-        private Bitmap bitmap;
+        private WriteableBitmap bitmap;
         private byte[] buffer;
         private int stride;
 
-        public int Width { get { return bitmap.Width; } }
-        public int Height { get { return bitmap.Height; } }
-
+        public int Width { get { return bitmap.PixelWidth; } }
+        public int Height { get { return bitmap.PixelHeight; } }
+        
         private void CopyToBuffer()
         {
-            var bitmapData = bitmap.LockBits(
-                new Rectangle(0, 0, Width, Height),
-                ImageLockMode.ReadOnly,
-                bitmap.PixelFormat
-            );
-
-            this.stride = bitmapData.Stride;
-            int bufferSize = bitmapData.Stride * bitmap.Height;
+            bitmap.Lock();
+            
+            int bufferSize = stride * Height;
             if (buffer == null || buffer.Length != bufferSize)
             {
                 buffer = new byte[bufferSize];
             }
-            IntPtr scan0 = bitmapData.Scan0;
 
-            Marshal.Copy(scan0, buffer, 0, bufferSize);
+            /*
+            bitmap.CopyPixels(
+                new System.Windows.Int32Rect(0, 0, Width, Height),
+                buffer,
+                stride,
+                0
+            );
+            */
 
-            bitmap.UnlockBits(bitmapData);
+            bitmap.Unlock();
         }
 
         private void CopyToBitmap()
         {
-            var bitmapData = bitmap.LockBits(
-                new Rectangle(0, 0, Width, Height),
-                ImageLockMode.WriteOnly,
-                bitmap.PixelFormat
+            bitmap.Lock();
+
+            int stride = bitmap.PixelWidth * (bitmap.Format.BitsPerPixel / 8);
+
+            bitmap.WritePixels(
+                new System.Windows.Int32Rect(0, 0, Width, Height),
+                buffer,
+                stride,
+                0
             );
-
-            IntPtr scan0 = bitmapData.Scan0;
-
-            Marshal.Copy(buffer, 0, scan0, buffer.Length);
-
-            bitmap.UnlockBits(bitmapData);
-
+            bitmap.Unlock();
         }
 
         public void Update()
@@ -75,7 +77,7 @@ namespace Vmd2.Processing
             buffer[i + 3] = color.A;
         }
 
-        public Bitmap GetBitmap()
+        public BitmapSource GetBitmap()
         {
             return bitmap;
         }

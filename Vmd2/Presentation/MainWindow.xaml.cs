@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 using Vmd2.DataAccess;
 using Vmd2.Logging;
 using Vmd2.Processing;
@@ -15,15 +19,18 @@ using Vmd2.Processing.TransferFunctions;
 
 namespace Vmd2.Presentation
 {
-    public partial class FormMain : Form
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
     {
-        public FormMain()
+        public MainWindow()
         {
             InitializeComponent();
-            Log.Control = controlLog1;
+            Log.Control = controlLog;
         }
 
-        private void FormMain_Load(object sender, EventArgs e)
+        private void image_Loaded(object sender, RoutedEventArgs e)
         {
             Image3D image;
 
@@ -44,35 +51,35 @@ namespace Vmd2.Presentation
             display = new DisplayImage(image.LengthX, image.LengthY);
 
             var tf = new TransferFunction1D();
-            tf.Add(0, Color.Black);
-            tf.Add(max * 0.2, Color.Blue);
-            tf.Add(max * 0.6, Color.Red);
-            tf.Add(max, Color.Yellow);
+            tf.Add(0, Colors.Black);
+            tf.Add(max * 0.2, Colors.Blue);
+            tf.Add(max * 0.6, Colors.Red);
+            tf.Add(max, Colors.Yellow);
 
             renderer = new TransferFunctionRenderer(image, display, tf);
 
-            scrollBarSlice.Maximum = image.LengthZ - 1;
-            pictureBoxDisplay.Image = display.GetBitmap();
+            slider.Maximum = image.LengthZ - 1;
+            this.image.Source = display.GetBitmap();
 
             Render();
         }
 
         private void Render()
         {
-            renderer.Slice = scrollBarSlice.Value;
+            renderer.Slice = (int)slider.Value;
 
             using (var progress = Log.P("Render slice " + renderer.Slice))
             {
                 renderer.Render();
                 display.Update();
-                pictureBoxDisplay.Invalidate();
+                //pictureBoxDisplay.Invalidate();
             }
         }
 
         private DisplayImage display;
         private TransferFunctionRenderer renderer;
 
-        private void scrollBarSlice_Scroll(object sender, ScrollEventArgs e)
+        private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             Render();
         }

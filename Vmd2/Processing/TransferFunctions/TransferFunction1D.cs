@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace Vmd2.Processing.TransferFunctions
 {
@@ -40,6 +41,12 @@ namespace Vmd2.Processing.TransferFunctions
         {
             var item = root;
             var last = item;
+            
+            if (value <= root.Value)
+            {
+                return root.Color;
+            }
+
             while (item != null)
             {
                 if (item.Value >= value)
@@ -74,10 +81,11 @@ namespace Vmd2.Processing.TransferFunctions
         /// <returns>The blended colors.</returns>
         public static Color Blend(Color color, Color backColor, double amount)
         {
+            byte a = (byte)Math.Round((color.A * amount) + backColor.A * (1 - amount));
             byte r = (byte)((color.R * amount) + backColor.R * (1 - amount));
             byte g = (byte)((color.G * amount) + backColor.G * (1 - amount));
             byte b = (byte)((color.B * amount) + backColor.B * (1 - amount));
-            return Color.FromArgb(r, g, b);
+            return Color.FromArgb(a, r, g, b);
         }
 
         private class TFItem

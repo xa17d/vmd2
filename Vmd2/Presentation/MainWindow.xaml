@@ -1,0 +1,17 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Vmd2"
+        xmlns:p="clr-namespace:Vmd2.Presentation" x:Class="Vmd2.Presentation.MainWindow"
+        mc:Ignorable="d"
+        Title="VMD 2" Height="350" Width="525">
+    <Grid>
+        <DockPanel>
+            <p:ControlLog x:Name="controlLog" DockPanel.Dock="Bottom" Height="103"/>
+            <Slider x:Name="slider" DockPanel.Dock="Bottom" SmallChange="1" ValueChanged="slider_ValueChanged" />
+            <Image x:Name="image" Loaded="image_Loaded" />
+        </DockPanel>
+    </Grid>
+</Window>
