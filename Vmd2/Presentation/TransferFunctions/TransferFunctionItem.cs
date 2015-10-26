@@ -18,6 +18,15 @@ namespace Vmd2.Presentation.TransferFunctions
             this.a = 255;
         }
 
+        public TransferFunctionItem(double value, Color color)
+        {
+            this.Value = value;
+            this.a = color.A;
+            this.r = color.R;
+            this.g = color.G;
+            this.b = color.B;
+        }
+
         private double val;
         public double Value { get { return val; } set { val = value; OnPropertyChanged(); } }
 

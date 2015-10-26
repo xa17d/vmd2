@@ -8,7 +8,7 @@ using Vmd2.Processing.Helper;
 
 namespace Vmd2.Processing.TransferFunctions
 {
-    class TransferFunction1D
+    public class TransferFunction1D
     {
         public TransferFunction1D()
         { }

@@ -37,22 +37,30 @@ namespace Vmd2.Presentation
         private DisplayImage display;
         private RenderDvr renderDvr;
         private RenderSlice renderSlice;
+        private Image3D image;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             renderSlice = new RenderSlice();
             renderDvr = new RenderDvr();
-            
+
             tabItemDvr.DataContext = renderDvr;
             tabItemSlice.DataContext = renderSlice;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(LoadImage), null);
+
+            int max = 1100;
+            controlTfSlice.AddItem(max * 0.0, ColorHelper.Alpha(0, Colors.Black));
+            controlTfSlice.AddItem(max * 0.2, ColorHelper.Alpha(200, Colors.Blue));
+            controlTfSlice.AddItem(max * 0.4, ColorHelper.Alpha(200, Colors.Red));
+            controlTfSlice.AddItem(max * 0.6, ColorHelper.Alpha(200, Colors.Yellow));
+            controlTfSlice.AddItem(max * 0.8, ColorHelper.Alpha(200, Colors.Violet));
+            controlTfSlice.AddItem(max * 1.0, ColorHelper.Alpha(200, Colors.Lime));
+
         }
 
         private void LoadImage(object state)
         {
-            Image3D image;
-
             //string testPath = @"MANIX\CER-CT\ANGIO CT";
             //string testPath = @"BRAINIX\SOUS - 702";
             //string testPath = @"BRAINIX\T2W-FE-EPI - 501";
@@ -69,10 +77,13 @@ namespace Vmd2.Presentation
 
 
             var tf = new TransferFunction1D();
-            tf.Add(-1, ColorHelper.Alpha(0, Colors.Black));
+
+            tf.Add(max * 0.0, ColorHelper.Alpha(0, Colors.Black));
             tf.Add(max * 0.2, ColorHelper.Alpha(200, Colors.Blue));
-            tf.Add(max * 0.6, ColorHelper.Alpha(200, Colors.Red));
-            tf.Add(max, Colors.Yellow);
+            tf.Add(max * 0.4, ColorHelper.Alpha(200, Colors.Red));
+            tf.Add(max * 0.6, ColorHelper.Alpha(200, Colors.Yellow));
+            tf.Add(max * 0.8, ColorHelper.Alpha(200, Colors.Violet));
+            tf.Add(max * 1.0, ColorHelper.Alpha(200, Colors.Lime));
 
             UpdateVms(image, tf);
         }
@@ -90,7 +101,7 @@ namespace Vmd2.Presentation
                 renderSlice.Renderer = new TransferFunction1DRenderer(image, display, tf);
 
                 slider.Maximum = image.LengthZ - 1;
-                this.image.Source = display.GetBitmap();
+                this.displayImage.Source = display.GetBitmap();
             }));
 
         }
@@ -121,6 +132,16 @@ namespace Vmd2.Presentation
                     }
                 }
                 return null;
+            }
+        }
+
+        private void Button_Render_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = SelectedVm;
+            if (vm != null)
+            {
+                UpdateVms(image, controlTfSlice.CreateTransferFunction());
+                vm.Render();
             }
         }
     }
