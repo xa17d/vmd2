@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -39,6 +40,17 @@ namespace Vmd2.Presentation
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            renderSlice = new RenderSlice();
+            renderDvr = new RenderDvr();
+            
+            tabItemDvr.DataContext = renderDvr;
+            tabItemSlice.DataContext = renderSlice;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(LoadImage), null);
+        }
+
+        private void LoadImage(object state)
+        {
             Image3D image;
 
             //string testPath = @"MANIX\CER-CT\ANGIO CT";
@@ -55,8 +67,6 @@ namespace Vmd2.Presentation
                 max = reader.MaxValue;
             }
 
-            renderSlice = new RenderSlice();
-            renderDvr = new RenderDvr();
 
             var tf = new TransferFunction1D();
             tf.Add(-1, ColorHelper.Alpha(0, Colors.Black));
@@ -65,28 +75,41 @@ namespace Vmd2.Presentation
             tf.Add(max, Colors.Yellow);
 
             UpdateVms(image, tf);
-
-            tabItemDvr.DataContext = renderDvr;
-            tabItemSlice.DataContext = renderSlice;
         }
 
         private void UpdateVms(Image3D image, TransferFunction1D tf)
         {
-            display = new DisplayImage(image.LengthX, image.LengthY);
+            Dispatcher.Invoke(new Action(() =>
+            {
+                display = new DisplayImage(image.LengthX, image.LengthY);
 
-            renderDvr.Image = image;
-            renderDvr.Renderer = new DvrRenderer(image, display, tf) { ThreadCount = 8 };
+                renderDvr.Image = image;
+                renderDvr.Renderer = new DvrRenderer(image, display, tf) { ThreadCount = 8 };
 
-            renderSlice.Image = image;
-            renderSlice.Renderer = new TransferFunction1DRenderer(image, display, tf);
+                renderSlice.Image = image;
+                renderSlice.Renderer = new TransferFunction1DRenderer(image, display, tf);
 
-            slider.Maximum = image.LengthZ - 1;
-            this.image.Source = display.GetBitmap();
+                slider.Maximum = image.LengthZ - 1;
+                this.image.Source = display.GetBitmap();
+            }));
+
         }
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.Source is TabControl)
+            {
+                var vm = SelectedVm;
+                if (vm != null)
+                {
+                    vm.Render();
+                }
+            }
+        }
+
+        private RenderVm SelectedVm
+        {
+            get
             {
                 var tabItem = (tabControl.SelectedItem as FrameworkElement);
                 if (tabItem != null)
@@ -94,10 +117,10 @@ namespace Vmd2.Presentation
                     var vm = (tabItem.DataContext as RenderVm);
                     if (vm != null)
                     {
-                        Log.I("Switched Rendering " + vm.ToString());
-                        vm.Render();
+                        return vm;
                     }
                 }
+                return null;
             }
         }
     }

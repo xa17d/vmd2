@@ -28,7 +28,7 @@ namespace Vmd2.Presentation
             InitializeComponent();
 
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 250);
             dispatcherTimer.Start();
         }
 
@@ -40,6 +40,13 @@ namespace Vmd2.Presentation
         }
 
         internal void Write(string message, Progress progress)
+        {
+            Dispatcher.Invoke(new WriteDelegate(UiWrite), TimeSpan.FromSeconds(5), message, progress);
+        }
+
+        private delegate void WriteDelegate(string message, Progress progress);
+
+        private void UiWrite(string message, Progress progress)
         {
             UpdateProgress();
 
@@ -77,7 +84,7 @@ namespace Vmd2.Presentation
             for (int i = 0; i < ongoingProgresses.Count; i++)
             {
                 var info = ongoingProgresses[i];
-                if (info.Progress.IsDone)
+                if (info.Progress.Status != ProgressStatus.Running)
                 {
                     ongoingProgresses.RemoveAt(i);
                     i--;
@@ -96,7 +103,8 @@ namespace Vmd2.Presentation
             public void Update()
             {
                 Block.Text = "   " + Progress.ToString();
-                if (Progress.IsDone) { Block.Foreground = Brushes.Green; }
+                if (Progress.Status == ProgressStatus.Done) { Block.Foreground = Brushes.Green; }
+                else if (Progress.Status == ProgressStatus.Aborted) { Block.Foreground = Brushes.OrangeRed; }
             }
         }
 

@@ -64,6 +64,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -98,6 +100,7 @@
     <Compile Include="DataAccess\TestData.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\Progress.cs" />
+    <Compile Include="Logging\ProgressStatus.cs" />
     <Compile Include="Presentation\ControlLog.xaml.cs">
       <DependentUpon>ControlLog.xaml</DependentUpon>
     </Compile>
@@ -114,6 +117,8 @@
     <Compile Include="Presentation\TransferFunctions\ControlTransferFunction1D.xaml.cs">
       <DependentUpon>ControlTransferFunction1D.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\TransferFunctions\TransferFunction1DVm.cs" />
+    <Compile Include="Presentation\TransferFunctions\TransferFunctionItem.cs" />
     <Compile Include="Presentation\ViewModels\NotifyPropertyChanged.cs" />
     <Compile Include="Presentation\ViewModels\RenderDvr.cs" />
     <Compile Include="Presentation\ViewModels\RenderSlice.cs" />

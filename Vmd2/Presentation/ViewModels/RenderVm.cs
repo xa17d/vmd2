@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using Vmd2.Logging;
 using Vmd2.Processing;
 using Vmd2.Processing.TransferFunctions;
@@ -41,11 +43,25 @@ namespace Vmd2.Presentation.ViewModels
 
         public void Render()
         {
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DoRender), null);
+        }
+
+        private void DoRender(object state)
+        {
             using (var progress = Log.P("Render " + Renderer.ToString()))
             {
-                Renderer.Render();
-                Renderer.Display.Update();
+                try
+                {
+                    //System.Threading.Thread.Sleep(1000);
+                    Renderer.Render(progress);
+                }
+                catch (ThreadAbortException)
+                {
+                    progress.Abort();
+                }
             }
+
+            Application.Current.Dispatcher.Invoke(Renderer.Display.Update);
         }
     }
 }

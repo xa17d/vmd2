@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vmd2.Logging;
 
 namespace Vmd2.Processing
 {
@@ -15,11 +16,12 @@ namespace Vmd2.Processing
 
         public DisplayImage Display { get; private set; }
 
-        public void Render()
+        public void Render(Progress progress)
         {
-            OnRender();
+            OnRender(progress);
+            progress.Done();
         }
 
-        protected abstract void OnRender();
+        protected abstract void OnRender(Progress progress);
     }
 }

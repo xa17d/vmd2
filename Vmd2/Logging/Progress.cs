@@ -11,7 +11,7 @@ namespace Vmd2.Logging
         public Progress()
         {
             this.progress = 0;
-            this.done = false;
+            this.status = ProgressStatus.Running;
             this.TimeMilliseconds = double.NaN;
             this.start = DateTime.Now;
         }
@@ -20,33 +20,61 @@ namespace Vmd2.Logging
         {
             this.progress = progress;
         }
+
+        public void UpdateIncrement(double delta)
+        {
+            lock (lockObject)
+            {
+                this.progress += delta;
+            }
+        }
         
         public void Dispose()
         {
             var end = DateTime.Now;
 
-            this.done = true;
+            if (status == ProgressStatus.Running)
+            {
+                status = ProgressStatus.Done;
+            }
             this.TimeMilliseconds = (end - start).TotalMilliseconds;
         }
 
-        private bool done;
+        public void Done()
+        {
+            status = ProgressStatus.Done;
+        }
+
+        public void Abort()
+        {
+            status = ProgressStatus.Aborted;
+        }
+
+        private ProgressStatus status;
         private double progress;
         private DateTime start;
+        private readonly object lockObject = new object();
 
         public double TimeMilliseconds { get; private set; }
         public double Value { get { return progress; } }
-        public bool IsDone {get { return done; } }
+        public ProgressStatus Status {get { return status; } }
 
         public override string ToString()
         {
-            if (!IsDone)
+            if (status == ProgressStatus.Running)
             {
                 return Value.ToString("0.0%");
             }
-            else
+            else if (status == ProgressStatus.Done)
             {
                 return TimeMilliseconds.ToString() + "ms";
             }
+            else if (status == ProgressStatus.Aborted)
+            {
+                return "aborted";
+            }
+
+            throw new Exception("invalid status "+status.ToString());
         }
     }
 }

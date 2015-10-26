@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Vmd2.Logging;
 
 namespace Vmd2.Processing
 {
@@ -15,7 +16,6 @@ namespace Vmd2.Processing
         }
 
         private Thread[] threads;
-        private int threadCount;
 
         public int ThreadCount
         {
@@ -34,7 +34,7 @@ namespace Vmd2.Processing
             }
         }
 
-        protected override void OnRender()
+        protected override void OnRender(Progress progress)
         {
             int delta = Display.Height / threads.Length;
             for (int i = 0; i < threads.Length; i++)
@@ -43,7 +43,7 @@ namespace Vmd2.Processing
 
                 int min = delta * i;
                 int max = (i == threads.Length - 1 ? Display.Height : (delta * (i + 1)));
-                var range = new LineRange(min, max);
+                var range = new LineRange(progress, min, max);
 
                 threads[i].Start(range);
             }
@@ -57,10 +57,13 @@ namespace Vmd2.Processing
         private void RenderLines(object lineObj)
         {
             var line = (LineRange)lineObj;
+            var progress = line.Progress;
 
             int min = line.Min;
             int max = line.Max;
             int width = Display.Width;
+
+            double delta = 1.0 / (((double)max - min) * ThreadCount);
 
             for (int y = min; y < max; y++)
             {
@@ -68,6 +71,8 @@ namespace Vmd2.Processing
                 {
                     OnRenderPixel(x, y);
                 }
+
+                progress.UpdateIncrement(delta);
             }
         }
 
@@ -75,14 +80,16 @@ namespace Vmd2.Processing
 
         private class LineRange
         {
-            public LineRange(int min, int max)
+            public LineRange(Progress progress, int min, int max)
             {
+                this.Progress = progress;
                 this.Min = min;
                 this.Max = max;
             }
 
             public int Min;
             public int Max;
+            public Progress Progress;
         }
     }
 }
