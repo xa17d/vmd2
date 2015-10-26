@@ -69,8 +69,7 @@ namespace Vmd2.DataAccess
                 }
             }
 
-            Debug.WriteLine("min: " + min);
-            Debug.WriteLine("max: " + max);
+            Log.I("Image loaded. min: " + min + "; max: " + max);
 
             this.MinValue = min;
             this.MaxValue = max;

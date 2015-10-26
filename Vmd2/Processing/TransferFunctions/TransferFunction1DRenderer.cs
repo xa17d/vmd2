@@ -28,18 +28,9 @@ namespace Vmd2.Processing.TransferFunctions
             display.SetPixel(x, y, tf.GetColor(voxel));
         }
 
-        /*public void Render()
+        public override string ToString()
         {
-            int s = Slice;
-
-            for (int y = 0; y < image.LengthY; y++)
-            {
-                for (int x = 0; x < image.LengthX; x++)
-                {
-                    var voxel = image[x, y, s];
-                    display.SetPixel(x, y, tf.GetColor(voxel));
-                }
-            }
-        }*/
+            return GetType().Name + " [slice: " + Slice + "]";
+        }
     }
 }

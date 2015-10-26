@@ -33,5 +33,10 @@ namespace Vmd2.Processing.DVR
 
             display.SetPixel(x, y, voxelColor);
         }
+
+        public override string ToString()
+        {
+            return GetType().Name;
+        }
     }
 }
