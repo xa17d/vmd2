@@ -14,22 +14,28 @@ namespace Vmd2.Processing
     {
         public DisplayImage(int width, int height)
         {
-            bitmap = new WriteableBitmap(width, height, 96,96, PixelFormats.Bgra32, BitmapPalettes.BlackAndWhite);
-            stride = bitmap.PixelWidth * (bitmap.Format.BitsPerPixel / 8);
+            bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, BitmapPalettes.BlackAndWhite);
+
+            this.width = bitmap.PixelWidth;
+            this.height = bitmap.PixelHeight;
+
+            this.stride = bitmap.PixelWidth * (bitmap.Format.BitsPerPixel / 8);
             CopyToBuffer();
         }
 
         private WriteableBitmap bitmap;
         private byte[] buffer;
         private int stride;
+        private int width;
+        private int height;
 
-        public int Width { get { return bitmap.PixelWidth; } }
-        public int Height { get { return bitmap.PixelHeight; } }
-        
+        public int Width { get { return width; } }
+        public int Height { get { return height; } }
+
         private void CopyToBuffer()
         {
             bitmap.Lock();
-            
+
             int bufferSize = stride * Height;
             if (buffer == null || buffer.Length != bufferSize)
             {

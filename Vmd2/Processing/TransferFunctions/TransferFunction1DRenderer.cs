@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Vmd2.Processing.TransferFunctions
 {
-    class TransferFunctionRenderer
+    class TransferFunction1DRenderer : RendererPixel
     {
-        public TransferFunctionRenderer(Image3D image, DisplayImage display, TransferFunction1D tf)
+        public TransferFunction1DRenderer(Image3D image, DisplayImage display, TransferFunction1D tf) : base(display)
         {
             this.image = image;
             this.display = display;
@@ -22,7 +22,13 @@ namespace Vmd2.Processing.TransferFunctions
         private DisplayImage display;
         private TransferFunction1D tf;
 
-        public void Render()
+        protected override void OnRenderPixel(int x, int y)
+        {
+            var voxel = image[x, y, Slice];
+            display.SetPixel(x, y, tf.GetColor(voxel));
+        }
+
+        /*public void Render()
         {
             int s = Slice;
 
@@ -34,6 +40,6 @@ namespace Vmd2.Processing.TransferFunctions
                     display.SetPixel(x, y, tf.GetColor(voxel));
                 }
             }
-        }
+        }*/
     }
 }

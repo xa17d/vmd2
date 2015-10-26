@@ -5,10 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Vmd2.Presentation"
              mc:Ignorable="d" 
+             FontFamily="Consolas"
+             Background="Black"
+             Foreground="Silver"
              d:DesignHeight="300" d:DesignWidth="300">
     <ScrollViewer x:Name="scrollViewer">
         <StackPanel x:Name="stack">
-            
+
         </StackPanel>
     </ScrollViewer>
 </UserControl>

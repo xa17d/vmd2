@@ -14,7 +14,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Vmd2.DataAccess;
 using Vmd2.Logging;
+using Vmd2.Presentation.ViewModels;
 using Vmd2.Processing;
+using Vmd2.Processing.DVR;
+using Vmd2.Processing.Helper;
 using Vmd2.Processing.TransferFunctions;
 
 namespace Vmd2.Presentation
@@ -30,7 +33,11 @@ namespace Vmd2.Presentation
             Log.Control = controlLog;
         }
 
-        private void image_Loaded(object sender, RoutedEventArgs e)
+        private DisplayImage display;
+        private RenderDvr renderDvr;
+        private RenderSlice renderSlice;
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Image3D image;
 
@@ -48,40 +55,50 @@ namespace Vmd2.Presentation
                 max = reader.MaxValue;
             }
 
-            display = new DisplayImage(image.LengthX, image.LengthY);
+            renderSlice = new RenderSlice();
+            renderDvr = new RenderDvr();
 
             var tf = new TransferFunction1D();
-            tf.Add(0, Colors.Black);
-            tf.Add(max * 0.2, Colors.Blue);
-            tf.Add(max * 0.6, Colors.Red);
+            tf.Add(-1, ColorHelper.Alpha(0, Colors.Black));
+            tf.Add(max * 0.2, ColorHelper.Alpha(200, Colors.Blue));
+            tf.Add(max * 0.6, ColorHelper.Alpha(200, Colors.Red));
             tf.Add(max, Colors.Yellow);
 
-            renderer = new TransferFunctionRenderer(image, display, tf);
+            UpdateVms(image, tf);
+
+            tabItemDvr.DataContext = renderDvr;
+            tabItemSlice.DataContext = renderSlice;
+        }
+
+        private void UpdateVms(Image3D image, TransferFunction1D tf)
+        {
+            display = new DisplayImage(image.LengthX, image.LengthY);
+
+            renderDvr.Image = image;
+            renderDvr.Renderer = new DvrRenderer(image, display, tf) { ThreadCount = 8 };
+
+            renderSlice.Image = image;
+            renderSlice.Renderer = new TransferFunction1DRenderer(image, display, tf);
 
             slider.Maximum = image.LengthZ - 1;
             this.image.Source = display.GetBitmap();
-
-            Render();
         }
 
-        private void Render()
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            renderer.Slice = (int)slider.Value;
-
-            using (var progress = Log.P("Render slice " + renderer.Slice))
+            if (e.Source is TabControl)
             {
-                renderer.Render();
-                display.Update();
-                //pictureBoxDisplay.Invalidate();
+                var tabItem = (tabControl.SelectedItem as FrameworkElement);
+                if (tabItem != null)
+                {
+                    var vm = (tabItem.DataContext as RenderVm);
+                    if (vm != null)
+                    {
+                        Log.I("Switched Rendering " + vm.ToString());
+                        vm.Render();
+                    }
+                }
             }
-        }
-
-        private DisplayImage display;
-        private TransferFunctionRenderer renderer;
-
-        private void slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            Render();
         }
     }
 }

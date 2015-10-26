@@ -105,12 +105,27 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Presentation\TransferFunctions\ControlTransferFunction1D.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Presentation\TransferFunctions\ControlTransferFunction1D.xaml.cs">
+      <DependentUpon>ControlTransferFunction1D.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\ViewModels\NotifyPropertyChanged.cs" />
+    <Compile Include="Presentation\ViewModels\RenderDvr.cs" />
+    <Compile Include="Presentation\ViewModels\RenderSlice.cs" />
+    <Compile Include="Presentation\ViewModels\RenderVm.cs" />
     <Compile Include="Processing\DisplayImage.cs" />
+    <Compile Include="Processing\DVR\DvrRenderer.cs" />
+    <Compile Include="Processing\Helper\ColorHelper.cs" />
     <Compile Include="Processing\Image3D.cs" />
+    <Compile Include="Processing\Renderer.cs" />
+    <Compile Include="Processing\RendererPixel.cs" />
     <Compile Include="Processing\TransferFunctions\TransferFunction1D.cs" />
-    <Compile Include="Processing\TransferFunctions\TransferFunctionRenderer.cs" />
+    <Compile Include="Processing\TransferFunctions\TransferFunction1DRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

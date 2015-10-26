@@ -6,12 +6,35 @@
         xmlns:local="clr-namespace:Vmd2"
         xmlns:p="clr-namespace:Vmd2.Presentation" x:Class="Vmd2.Presentation.MainWindow"
         mc:Ignorable="d"
+        Loaded="Window_Loaded"
         Title="VMD 2" Height="350" Width="525">
     <Grid>
-        <DockPanel>
-            <p:ControlLog x:Name="controlLog" DockPanel.Dock="Bottom" Height="103"/>
-            <Slider x:Name="slider" DockPanel.Dock="Bottom" SmallChange="1" ValueChanged="slider_ValueChanged" />
-            <Image x:Name="image" Loaded="image_Loaded" />
-        </DockPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+
+        <Image x:Name="image" Grid.Column="2" Grid.Row="0" />
+        <GridSplitter Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" />
+        <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+        
+        <p:ControlLog x:Name="controlLog" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" />
+        <TabControl Grid.Column="0" Grid.Row="0" SelectionChanged="TabControl_SelectionChanged" x:Name="tabControl">
+            <TabItem x:Name="tabItemSlice" Header="Slice">
+                <StackPanel>
+                    <TextBlock>Z-Slice:</TextBlock>
+                <Slider x:Name="slider" DockPanel.Dock="Bottom" SmallChange="1" Value="{Binding Slice}" />
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="tabItemDvr" Header="DVR">
+                
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
