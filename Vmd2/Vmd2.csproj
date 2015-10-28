@@ -120,10 +120,12 @@
     <Compile Include="Presentation\TransferFunctions\TransferFunction1DVm.cs" />
     <Compile Include="Presentation\TransferFunctions\TransferFunctionItem.cs" />
     <Compile Include="Presentation\ViewModels\NotifyPropertyChanged.cs" />
+    <Compile Include="Presentation\ViewModels\RenderMip.cs" />
     <Compile Include="Presentation\ViewModels\RenderDvr.cs" />
     <Compile Include="Presentation\ViewModels\RenderSlice.cs" />
     <Compile Include="Presentation\ViewModels\RenderVm.cs" />
     <Compile Include="Processing\DisplayImage.cs" />
+    <Compile Include="Processing\MIP\MipRenderer.cs" />
     <Compile Include="Processing\DVR\DvrRenderer.cs" />
     <Compile Include="Processing\Helper\ColorHelper.cs" />
     <Compile Include="Processing\Image3D.cs" />
