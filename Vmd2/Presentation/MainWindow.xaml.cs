@@ -37,15 +37,22 @@ namespace Vmd2.Presentation
         private DisplayImage display;
         private RenderDvr renderDvr;
         private RenderSlice renderSlice;
+        private RenderWindowing renderWindowing;
+        private Windowing window;
+        private RenderMip renderMip;
         private Image3D image;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             renderSlice = new RenderSlice();
             renderDvr = new RenderDvr();
+            renderWindowing = new RenderWindowing();
+            renderMip = new RenderMip();
 
             tabItemDvr.DataContext = renderDvr;
             tabItemSlice.DataContext = renderSlice;
+            tabItemWindowing.DataContext = renderWindowing;
+            tabItemMip.DataContext = renderMip;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(LoadImage), null);
 
@@ -77,6 +84,7 @@ namespace Vmd2.Presentation
 
 
             var tf = new TransferFunction1D();
+            this.window = new Windowing();
 
             tf.Add(max * 0.0, ColorHelper.Alpha(0, Colors.Black));
             tf.Add(max * 0.2, ColorHelper.Alpha(200, Colors.Blue));
@@ -85,10 +93,10 @@ namespace Vmd2.Presentation
             tf.Add(max * 0.8, ColorHelper.Alpha(200, Colors.Violet));
             tf.Add(max * 1.0, ColorHelper.Alpha(200, Colors.Lime));
 
-            UpdateVms(image, tf);
+            UpdateVms(image, tf, window);
         }
 
-        private void UpdateVms(Image3D image, TransferFunction1D tf)
+        private void UpdateVms(Image3D image, TransferFunction1D tf, Windowing window)
         {
             Dispatcher.Invoke(new Action(() =>
             {
@@ -99,6 +107,12 @@ namespace Vmd2.Presentation
 
                 renderSlice.Image = image;
                 renderSlice.Renderer = new TransferFunction1DRenderer(image, display, tf);
+
+                renderWindowing.Image = image;
+                renderWindowing.Renderer = new WindowingRenderer(image, display, this.window);
+
+                renderMip.Image = image;
+                renderMip.Renderer = new MipRenderer(image, display, window) { ThreadCount = 8 };
 
                 slider.Maximum = image.LengthZ - 1;
                 this.displayImage.Source = display.GetBitmap();
@@ -140,7 +154,7 @@ namespace Vmd2.Presentation
             var vm = SelectedVm;
             if (vm != null)
             {
-                UpdateVms(image, controlTfSlice.CreateTransferFunction());
+                UpdateVms(image, controlTfSlice.CreateTransferFunction(), this.window);
                 vm.Render();
             }
         }

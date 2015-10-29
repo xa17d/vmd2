@@ -35,8 +35,12 @@ namespace Vmd2.DataAccess
         public Image3D ReadImage3D()
         {
             // based on http://www.vtk.org/Wiki/VTK/Examples/Cxx/ImageData/IterateImageData
-            
+
+            // conversion value to HU based on http://www.codeproject.com/Articles/466955/Medical-image-visualization-using-WPF
+
             var imageData = reader.GetOutput();
+            var rescaleSlope = reader.GetRescaleSlope();
+            var rescaleOffset = reader.GetRescaleOffset();
             int[] dimensions = imageData.GetDimensions();
 
             if (dimensions.Length != 3)
@@ -57,7 +61,7 @@ namespace Vmd2.DataAccess
                     {
                         for (int x = 0; x < dimensions[0]; x++)
                         {
-                            double voxel = imageData.GetScalarComponentAsDouble(x, y, z, 0);
+                            double voxel = imageData.GetScalarComponentAsDouble(x, y, z, 0) * rescaleSlope + rescaleOffset;
                             image[x, y, z] = voxel;
 
                             min = Math.Min(min, voxel);

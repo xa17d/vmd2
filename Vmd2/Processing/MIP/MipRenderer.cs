@@ -12,32 +12,26 @@ namespace Vmd2.Processing.DVR
 {
     class MipRenderer : RendererPixel
     {
-        public MipRenderer(Image3D image, DisplayImage display, double min, double max) : base(display)
+        public MipRenderer(Image3D image, DisplayImage display, Windowing window) : base(display)
         {
             this.image = image;
             this.display = display;
-            this.min = min;
-            this.max = max;
+            this.window = window;
         }
 
         private Image3D image;
         private DisplayImage display;
-        private double min;
-        private double max;
+        private Windowing window;
 
         protected override void OnRenderPixel(int x, int y)
         {
-            double resultColor = min;
+            double mipValue = double.MinValue;
             for (int z = image.LengthZ - 1; z >= 0; z--)
             {
-                double color = image[x, y, z];
-                if(color > resultColor)
-                {
-                    resultColor = color;
-                }
+                mipValue = Math.Max(mipValue, image[x, y, z]);
             }
-            byte rgb = Convert.ToByte((resultColor - min) / (max - min) * 0xFF / 3);
-            display.SetPixel(x, y, Color.FromArgb(0xFF, rgb, rgb, rgb));
+
+            display.SetPixel(x, y, window.GetColor(mipValue));
         }
 
         public override string ToString()

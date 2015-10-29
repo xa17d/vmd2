@@ -43,6 +43,25 @@
                     </Button>
                 </StackPanel>
             </TabItem>
+            <TabItem x:Name="tabItemWindowing" Header="Windowing">
+                <StackPanel>
+                    <TextBlock>Z-Slice:</TextBlock>
+                    <Slider x:Name="sliderWindowing" DockPanel.Dock="Bottom" SmallChange="1" Value="{Binding Slice}" />
+                    
+                    <!-- TODO slider to change WindowCenter and WindowWidth -->
+                    
+                    <Button Click="Button_Render_Click">
+                        Render
+                    </Button>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="tabItemMip" Header="MIP">
+                <StackPanel>
+                    <Button Click="Button_Render_Click">
+                        Render
+                    </Button>
+                </StackPanel>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

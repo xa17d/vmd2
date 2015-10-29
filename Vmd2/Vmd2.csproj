@@ -122,6 +122,7 @@
     <Compile Include="Presentation\ViewModels\NotifyPropertyChanged.cs" />
     <Compile Include="Presentation\ViewModels\RenderMip.cs" />
     <Compile Include="Presentation\ViewModels\RenderDvr.cs" />
+    <Compile Include="Presentation\ViewModels\RenderWindowing.cs" />
     <Compile Include="Presentation\ViewModels\RenderSlice.cs" />
     <Compile Include="Presentation\ViewModels\RenderVm.cs" />
     <Compile Include="Processing\DisplayImage.cs" />
@@ -133,6 +134,8 @@
     <Compile Include="Processing\RendererPixel.cs" />
     <Compile Include="Processing\TransferFunctions\TransferFunction1D.cs" />
     <Compile Include="Processing\TransferFunctions\TransferFunction1DRenderer.cs" />
+    <Compile Include="Processing\Windowing\Windowing.cs" />
+    <Compile Include="Processing\Windowing\WindowingRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
