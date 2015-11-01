@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
-using Vmd2.Processing.Helper;
 
-namespace Vmd2.Processing.TransferFunctions
+namespace Vmd2.Processing.Mapping
 {
     public class Windowing
     {

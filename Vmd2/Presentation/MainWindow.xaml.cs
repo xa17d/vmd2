@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Vmd2.DataAccess;
 using Vmd2.Logging;
 using Vmd2.Presentation.ViewModels;
@@ -20,6 +10,8 @@ using Vmd2.Processing;
 using Vmd2.Processing.DVR;
 using Vmd2.Processing.Helper;
 using Vmd2.Processing.TransferFunctions;
+using Vmd2.Processing.Mapping;
+using Vmd2.Processing.MIP;
 
 namespace Vmd2.Presentation
 {

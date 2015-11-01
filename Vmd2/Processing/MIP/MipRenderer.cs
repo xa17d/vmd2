@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using Vmd2.Logging;
-using Vmd2.Processing.Helper;
-using Vmd2.Processing.TransferFunctions;
+using Vmd2.Processing.Mapping;
 
-namespace Vmd2.Processing.DVR
+namespace Vmd2.Processing.MIP
 {
     class MipRenderer : RendererPixel
     {
