@@ -1,4 +1,5 @@
 ﻿<Window xmlns:TransferFunctions="clr-namespace:Vmd2.Presentation.TransferFunctions" 
+        xmlns:Mapping="clr-namespace:Vmd2.Presentation.Mapping" 
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -26,10 +27,10 @@
         
         <p:ControlLog x:Name="controlLog" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" />
         <TabControl Grid.Column="0" Grid.Row="0" SelectionChanged="TabControl_SelectionChanged" x:Name="tabControl">
-            <TabItem x:Name="tabItemSlice" Header="Slice">
+            <TabItem x:Name="tabItemSlice" Header="Transfer Function">
                 <StackPanel>
                     <TextBlock>Z-Slice:</TextBlock>
-                    <Slider x:Name="slider" DockPanel.Dock="Bottom" SmallChange="1" Value="{Binding Slice}" />
+                    <Slider x:Name="sliderTf" DockPanel.Dock="Bottom" SmallChange="1" Value="{Binding Slice}" />
                     <TransferFunctions:ControlTransferFunction1D x:Name="controlTfSlice" />
                     <Button Click="Button_Render_Click">
                         Render
@@ -47,9 +48,7 @@
                 <StackPanel>
                     <TextBlock>Z-Slice:</TextBlock>
                     <Slider x:Name="sliderWindowing" DockPanel.Dock="Bottom" SmallChange="1" Value="{Binding Slice}" />
-                    
-                    <!-- TODO slider to change WindowCenter and WindowWidth -->
-                    
+                    <Mapping:ControlWindowing x:Name="controlWindowing" />
                     <Button Click="Button_Render_Click">
                         Render
                     </Button>

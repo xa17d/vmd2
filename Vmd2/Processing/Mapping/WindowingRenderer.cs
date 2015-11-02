@@ -6,19 +6,19 @@
         {
             this.image = image;
             this.display = display;
-            this.window = window;
+            this.Window = window;
             this.Slice = 0;
         }
 
         public int Slice { get; set; }
+        public Windowing Window { get; }
         private Image3D image;
         private DisplayImage display;
-        private Windowing window;
 
         protected override void OnRenderPixel(int x, int y)
         {
             var voxel = image[x, y, Slice];
-            display.SetPixel(x, y, window.GetColor(voxel));
+            display.SetPixel(x, y, Window.GetColor(voxel));
         }
 
         public override string ToString()

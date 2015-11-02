@@ -108,12 +108,21 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Presentation\Mapping\ControlWindowing.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Presentation\TransferFunctions\ControlTransferFunction1D.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Presentation\Mapping\ControlWindowing.xaml.cs">
+      <DependentUpon>ControlWindowing.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Mapping\WindowingItem.cs" />
+    <Compile Include="Presentation\Mapping\WindowingVm.cs" />
     <Compile Include="Presentation\TransferFunctions\ControlTransferFunction1D.xaml.cs">
       <DependentUpon>ControlTransferFunction1D.xaml</DependentUpon>
     </Compile>
@@ -126,6 +135,7 @@
     <Compile Include="Presentation\ViewModels\RenderSlice.cs" />
     <Compile Include="Presentation\ViewModels\RenderVm.cs" />
     <Compile Include="Processing\DisplayImage.cs" />
+    <Compile Include="Processing\Helper\GaussianFilter.cs" />
     <Compile Include="Processing\MIP\MipRenderer.cs" />
     <Compile Include="Processing\DVR\DvrRenderer.cs" />
     <Compile Include="Processing\Helper\ColorHelper.cs" />
@@ -134,8 +144,8 @@
     <Compile Include="Processing\RendererPixel.cs" />
     <Compile Include="Processing\TransferFunctions\TransferFunction1D.cs" />
     <Compile Include="Processing\TransferFunctions\TransferFunction1DRenderer.cs" />
-    <Compile Include="Processing\Windowing\Windowing.cs" />
-    <Compile Include="Processing\Windowing\WindowingRenderer.cs" />
+    <Compile Include="Processing\Mapping\Windowing.cs" />
+    <Compile Include="Processing\Mapping\WindowingRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

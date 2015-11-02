@@ -55,7 +55,6 @@ namespace Vmd2.Presentation
             controlTfSlice.AddItem(max * 0.6, ColorHelper.Alpha(200, Colors.Yellow));
             controlTfSlice.AddItem(max * 0.8, ColorHelper.Alpha(200, Colors.Violet));
             controlTfSlice.AddItem(max * 1.0, ColorHelper.Alpha(200, Colors.Lime));
-
         }
 
         private void LoadImage(object state)
@@ -85,10 +84,10 @@ namespace Vmd2.Presentation
             tf.Add(max * 0.8, ColorHelper.Alpha(200, Colors.Violet));
             tf.Add(max * 1.0, ColorHelper.Alpha(200, Colors.Lime));
 
-            UpdateVms(image, tf, window);
+            UpdateVms(image, tf);
         }
 
-        private void UpdateVms(Image3D image, TransferFunction1D tf, Windowing window)
+        private void UpdateVms(Image3D image, TransferFunction1D tf)
         {
             Dispatcher.Invoke(new Action(() =>
             {
@@ -101,12 +100,14 @@ namespace Vmd2.Presentation
                 renderSlice.Renderer = new TransferFunction1DRenderer(image, display, tf);
 
                 renderWindowing.Image = image;
-                renderWindowing.Renderer = new WindowingRenderer(image, display, this.window);
+                renderWindowing.Renderer = new WindowingRenderer(image, display, window);
 
                 renderMip.Image = image;
                 renderMip.Renderer = new MipRenderer(image, display, window) { ThreadCount = 8 };
 
-                slider.Maximum = image.LengthZ - 1;
+                sliderTf.Maximum = image.LengthZ - 1;
+                sliderWindowing.Maximum = image.LengthZ - 1;
+
                 this.displayImage.Source = display.GetBitmap();
             }));
 
@@ -146,7 +147,7 @@ namespace Vmd2.Presentation
             var vm = SelectedVm;
             if (vm != null)
             {
-                UpdateVms(image, controlTfSlice.CreateTransferFunction(), this.window);
+                UpdateVms(image, controlTfSlice.CreateTransferFunction());
                 vm.Render();
             }
         }
