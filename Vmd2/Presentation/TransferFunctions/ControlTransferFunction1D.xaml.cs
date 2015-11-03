@@ -31,6 +31,11 @@ namespace Vmd2.Presentation.TransferFunctions
 
             Vm.Items.CollectionChanged += Items_CollectionChanged;
             Vm.PropertyChanged += Vm_PropertyChanged;
+
+            Vm.Items.Add(new TransferFunctionItem(0, Colors.Black));
+            Vm.Items.Add(new TransferFunctionItem(1000, Colors.White));
+
+            UpdateAll();
         }
 
         private Brush brushStrokeSelected = new SolidColorBrush(Colors.OrangeRed);

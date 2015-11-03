@@ -8,7 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
         <DockPanel>
-            <Button Width="20" DockPanel.Dock="Right" x:Name="buttonRemove" Click="buttonRemove_Click">-</Button>
+            <Button Width="20" DockPanel.Dock="Right" x:Name="buttonRemove" Background="#FFFF6767" Click="buttonRemove_Click">X</Button>
             <Button Width="20" DockPanel.Dock="Right" x:Name="buttonDown" Click="buttonDown_Click">v</Button>
             <Button Width="20" DockPanel.Dock="Right" x:Name="buttonUp" Click="buttonUp_Click">^</Button>
             <TextBlock Text="{Binding Name}" Background="Silver" FontWeight="Bold"></TextBlock>
