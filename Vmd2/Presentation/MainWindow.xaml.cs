@@ -63,6 +63,7 @@ namespace Vmd2.Presentation
             }
 
             thread = new Thread(new ThreadStart(ProcessPipeline));
+            processThread = thread;
             thread.IsBackground = true;
             thread.Start();
         }

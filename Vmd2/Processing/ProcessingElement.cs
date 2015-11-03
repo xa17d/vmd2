@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Vmd2.Logging;
 
@@ -25,7 +26,15 @@ namespace Vmd2.Processing
         {
             using (var progress = Log.P(Name))
             {
-                return OnProcess(image, progress);
+                try
+                {
+                    return OnProcess(image, progress);
+                }
+                catch(ThreadAbortException)
+                {
+                    progress.Abort();
+                    throw;
+                }
             }
         }
 
