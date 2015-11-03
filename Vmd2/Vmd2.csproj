@@ -99,6 +99,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Presentation\Filter\ControlFilter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Presentation\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -123,6 +127,9 @@
     </Compile>
     <Compile Include="Presentation\DVR\ControlDvrRenderer.xaml.cs">
       <DependentUpon>ControlDvrRenderer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Filter\ControlFilter.xaml.cs">
+      <DependentUpon>ControlFilter.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -167,10 +174,10 @@
     <Compile Include="Processing\DisplayImage.cs" />
     <Compile Include="Processing\IDisplay.cs" />
     <Compile Include="Processing\ImageLoader.cs" />
-    <Compile Include="Processing\Filter\FilterRenderer.cs" />
-    <Compile Include="Processing\Filter\GaussianFilter7x7.cs" />
-    <Compile Include="Processing\Filter\GaussianFilter3x3.cs" />
-    <Compile Include="Processing\Filter\GradientFilter3x3.cs" />
+    <Compile Include="Processing\Filters\Filter.cs" />
+    <Compile Include="Processing\Filters\GaussianFilter7x7.cs" />
+    <Compile Include="Processing\Filters\GaussianFilter3x3.cs" />
+    <Compile Include="Processing\Filters\GradientFilter3x3.cs" />
     <Compile Include="Processing\MIP\MipRenderer.cs" />
     <Compile Include="Processing\DVR\DvrRenderer.cs" />
     <Compile Include="Processing\Helper\ColorHelper.cs" />

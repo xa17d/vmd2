@@ -1,6 +1,6 @@
-﻿namespace Vmd2.Processing.Filter
+﻿namespace Vmd2.Processing.Filters
 {
-    class GaussianFilter3x3 : FilterRenderer
+    class GaussianFilter3x3 : Filter
     {
         // 1 2 1
         // 2 4 2

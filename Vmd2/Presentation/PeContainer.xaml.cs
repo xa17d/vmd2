@@ -42,5 +42,27 @@ namespace Vmd2.Presentation
         {
             Element.Pipeline.Remove(Element);
         }
+
+        private void buttonDown_Click(object sender, RoutedEventArgs e)
+        {
+            var index = Element.Pipeline.IndexOf(Element);
+            if (index < Element.Pipeline.Count - 1)
+            {
+                var tmp = Element.Pipeline[index];
+                Element.Pipeline[index] = Element.Pipeline[index + 1];
+                Element.Pipeline[index + 1] = tmp;
+            }
+        }
+
+        private void buttonUp_Click(object sender, RoutedEventArgs e)
+        {
+            var index = Element.Pipeline.IndexOf(Element);
+            if (index > 0)
+            {
+                var tmp = Element.Pipeline[index];
+                Element.Pipeline[index] = Element.Pipeline[index - 1];
+                Element.Pipeline[index - 1] = tmp;
+            }
+        }
     }
 }

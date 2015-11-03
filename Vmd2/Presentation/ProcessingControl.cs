@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Vmd2.Presentation
 {
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     class ProcessingControl : Attribute
     {
         public ProcessingControl(Type processingElementType)
@@ -22,10 +23,12 @@ namespace Vmd2.Presentation
 
             foreach (var type in typeof(ProcessingControl).Assembly.GetTypes())
             {
-                var pc = type.GetCustomAttribute<ProcessingControl>();
-                if (pc != null)
+                foreach (var pc in type.GetCustomAttributes<ProcessingControl>())
                 {
-                    types.Add(pc.processingElementType);
+                    if (pc != null)
+                    {
+                        types.Add(pc.processingElementType);
+                    }
                 }
             }
 
@@ -36,8 +39,7 @@ namespace Vmd2.Presentation
         {
             foreach (var type in typeof(ProcessingControl).Assembly.GetTypes())
             {
-                var pc = type.GetCustomAttribute<ProcessingControl>();
-                if (pc != null)
+                foreach (var pc in type.GetCustomAttributes<ProcessingControl>())
                 {
                     if (pc.processingElementType == processingElement)
                     {

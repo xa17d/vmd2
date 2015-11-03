@@ -9,6 +9,8 @@
     <StackPanel>
         <DockPanel>
             <Button Width="20" DockPanel.Dock="Right" x:Name="buttonRemove" Click="buttonRemove_Click">-</Button>
+            <Button Width="20" DockPanel.Dock="Right" x:Name="buttonDown" Click="buttonDown_Click">v</Button>
+            <Button Width="20" DockPanel.Dock="Right" x:Name="buttonUp" Click="buttonUp_Click">^</Button>
             <TextBlock Text="{Binding Name}" Background="Silver" FontWeight="Bold"></TextBlock>
         </DockPanel>
         <ContentControl x:Name="container" Margin="5">

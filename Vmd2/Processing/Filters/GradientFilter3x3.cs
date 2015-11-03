@@ -1,6 +1,6 @@
-﻿namespace Vmd2.Processing.Filter
+﻿namespace Vmd2.Processing.Filters
 {
-    class GradientFilter3x3 : FilterRenderer
+    class GradientFilter3x3 : Filter
     {
         // 1  1  1
         // 1 -8  1
