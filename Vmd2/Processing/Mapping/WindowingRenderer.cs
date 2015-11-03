@@ -4,25 +4,20 @@ namespace Vmd2.Processing.Mapping
 {
     class WindowingRenderer : RendererPixel
     {
-        public WindowingRenderer(Image3D image, DisplayImage display, Windowing window) : base(display)
+        public WindowingRenderer(Image3D image, DisplayImage display, Windowing window, FilterRenderer filter) : base(display)
         {
             this.image = image;
             this.display = display;
             this.Window = window;
-            this.Slice = 0;
-
-            // 3 x 3 Filter
-            //this.filter = new GaussianFilter(new double[3, 3] { { 1, 2, 1 }, { 2, 4, 2 }, { 1, 2, 1 } });
-
-            // 7 x 7 Filter
-            this.filter = new GaussianFilter(new double[7, 7] { { 1, 2, 3, 4, 3, 2, 1 }, { 2, 4, 6, 8, 6, 4, 2 }, { 3, 6, 9, 12, 9, 6, 3 }, { 4, 8, 12, 16, 12, 8, 4 }, { 3, 6, 9, 12, 9, 6, 3 }, { 2, 4, 6, 8, 6, 4, 2 }, { 1, 2, 3, 4, 3, 2, 1 } });
+            this.filter = filter;
+            Slice = 0;
         }
 
         public int Slice { get; set; }
         public Windowing Window { get; }
         private Image3D image;
         private DisplayImage display;
-        private GaussianFilter filter;
+        private FilterRenderer filter;
 
         protected override void OnRenderPixel(int x, int y)
         {

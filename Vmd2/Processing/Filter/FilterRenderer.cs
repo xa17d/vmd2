@@ -1,24 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Vmd2.Processing.Filter
 {
-    class GaussianFilter
+    abstract class FilterRenderer
     {
         private double[,] filter;
         private int rowCount;
         private int columnCount;
         private double divider;
-        public GaussianFilter(double[,] filter)
+
+        public FilterRenderer(double[,] filter)
         {
             this.filter = filter;
-            this.rowCount = filter.GetLength(0);
-            this.columnCount = filter.GetLength(1);
-            this.divider = GetDivider();
-            this.Activated = true;
+            rowCount = filter.GetLength(0);
+            columnCount = filter.GetLength(1);
+            divider = GetDivider();
+            Activated = true;
 
             if (rowCount % 2 == 0 || columnCount % 2 == 0)
             {
@@ -59,6 +56,12 @@ namespace Vmd2.Processing.Filter
                 {
                     sum += filter[j,i];
                 }
+            }
+
+            //avoid dividing by zero
+            if(sum == 0)
+            {
+                sum = 1;
             }
 
             return sum;

@@ -12,6 +12,7 @@ using Vmd2.Processing.Helper;
 using Vmd2.Processing.TransferFunctions;
 using Vmd2.Processing.Mapping;
 using Vmd2.Processing.MIP;
+using Vmd2.Processing.Filter;
 
 namespace Vmd2.Presentation
 {
@@ -99,8 +100,14 @@ namespace Vmd2.Presentation
                 renderSlice.Image = image;
                 renderSlice.Renderer = new TransferFunction1DRenderer(image, display, tf);
 
+                //TODO integrate in ui
+                //FilterRenderer filter = new GaussianFilter3x3();
+                FilterRenderer filter = new GaussianFilter7x7();
+                //FilterRenderer filter = new GradientFilter3x3();
+                //filter.Activated = false;
+
                 renderWindowing.Image = image;
-                renderWindowing.Renderer = new WindowingRenderer(image, display, window);
+                renderWindowing.Renderer = new WindowingRenderer(image, display, window, filter);
 
                 renderMip.Image = image;
                 renderMip.Renderer = new MipRenderer(image, display, window) { ThreadCount = 8 };
