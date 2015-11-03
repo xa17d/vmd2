@@ -131,7 +131,7 @@ namespace Vmd2.Processing
                 threads[i].Join();
             }
 
-            return image;
+            return imageOut;
         }
 
         protected abstract void OnProcess2D(Image3D imageIn, Image3D imageOut, int x, int y);
