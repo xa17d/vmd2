@@ -70,14 +70,14 @@ namespace Vmd2.Presentation
 
         private void ProcessPipeline()
         {
-            Log.I("===== Pipeline Start =====");
+            Log.H("Pipeline Start");
             pipeline.Process();
 
             if (display != null)
             {
                 Dispatcher.Invoke(display.Update);
             }
-            Log.I("===== Done =====");
+            Log.I("Done.");
         }
 
         private void Pipeline_PipelineChanged(object sender, EventArgs e)

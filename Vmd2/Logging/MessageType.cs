@@ -9,6 +9,7 @@ namespace Vmd2.Logging
     enum MessageType
     {
         Info,
-        Error
+        Error,
+        Header
     }
 }

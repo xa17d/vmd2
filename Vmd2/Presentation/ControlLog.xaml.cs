@@ -61,6 +61,12 @@ namespace Vmd2.Presentation
                     textBlock.Foreground = Brushes.OrangeRed;
                     textBlock.FontWeight = FontWeights.Bold;
                 }
+                else if (type == MessageType.Header)
+                {
+                    textBlock.Foreground = Brushes.SkyBlue;
+                    textBlock.Background = Brushes.Gray;
+                    textBlock.FontWeight = FontWeights.Bold;
+                }
             }
             else
             {
@@ -69,6 +75,7 @@ namespace Vmd2.Presentation
                 var textBlockMessage = new TextBlock();
                 var textBlockProgress = new TextBlock();
                 textBlockMessage.Text = message;
+                textBlockMessage.MinWidth = 250;
                 textBlockProgress.Foreground = Brushes.Blue;
 
                 s.Children.Add(textBlockMessage);

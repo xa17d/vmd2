@@ -38,5 +38,10 @@ namespace Vmd2.Processing
 
             return result;
         }
+
+        public override string ToString()
+        {
+            return base.ToString() + " slice: " + sliceIndex;
+        }
     }
 }

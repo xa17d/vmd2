@@ -30,7 +30,7 @@ namespace Vmd2.Processing
 
         public double[,] GetArea(int x, int y, int z, int xLength, int yLength)
         {
-            if(xLength % 2 == 0 || yLength % 2 == 0)
+            if (xLength % 2 == 0 || yLength % 2 == 0)
             {
                 throw new ArgumentException("illegal filter size");
             }
@@ -59,6 +59,15 @@ namespace Vmd2.Processing
             }
 
             return area;
+        }
+
+        public static string InfoString(Image3D image)
+        {
+            if (image == null) { return "null"; }
+            else
+            {
+                return image.LengthX + "x" + image.LengthY + "x" + image.LengthZ;
+            }
         }
     }
 }

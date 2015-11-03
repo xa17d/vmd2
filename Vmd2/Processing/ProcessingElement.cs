@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,13 +25,13 @@ namespace Vmd2.Processing
 
         public Image3D Process(Image3D image)
         {
-            using (var progress = Log.P(Name))
+            using (var progress = Log.P(ToString()))
             {
                 try
                 {
                     return OnProcess(image, progress);
                 }
-                catch(ThreadAbortException)
+                catch (ThreadAbortException)
                 {
                     progress.Abort();
                     throw;

@@ -21,6 +21,16 @@ namespace Vmd2.Logging
             return progress;
         }
 
+        public static void E(string message)
+        {
+            WriteMessage(message, null, MessageType.Error);
+        }
+
+        public static void H(string message)
+        {
+            WriteMessage(message, null, MessageType.Header);
+        }
+
         private static void WriteMessage(string message, Progress progress, MessageType type)
         {
             var c = Control;
@@ -31,10 +41,5 @@ namespace Vmd2.Logging
         }
 
         public static ControlLog Control { get; set; }
-
-        public static void E(string message)
-        {
-            WriteMessage(message, null, MessageType.Error);
-        }
     }
 }
