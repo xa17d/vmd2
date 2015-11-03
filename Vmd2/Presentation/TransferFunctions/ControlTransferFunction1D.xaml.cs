@@ -35,7 +35,12 @@ namespace Vmd2.Presentation.TransferFunctions
             Vm.Items.Add(new TransferFunctionItem(0, Colors.Black));
             Vm.Items.Add(new TransferFunctionItem(1000, Colors.White));
 
-            UpdateAll();
+            Loaded += ControlTransferFunction1D_Loaded;
+        }
+
+        private void ControlTransferFunction1D_Loaded(object sender, RoutedEventArgs e)
+        {
+            //UpdateAll();
         }
 
         private Brush brushStrokeSelected = new SolidColorBrush(Colors.OrangeRed);

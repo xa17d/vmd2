@@ -14,16 +14,6 @@ namespace Vmd2.Processing
         {
             base.OnCollectionChanged(e);
 
-            if (e.NewItems != null)
-            {
-                foreach (var item in e.NewItems)
-                {
-                    var pe = (ProcessingElement)item;
-                    pe.Pipeline = this;
-                    pe.PropertyChanged += Pe_PropertyChanged;
-                }
-            }
-
             if (e.OldItems != null)
             {
                 foreach (var item in e.OldItems)
@@ -31,6 +21,16 @@ namespace Vmd2.Processing
                     var pe = (ProcessingElement)item;
                     pe.PropertyChanged -= Pe_PropertyChanged;
                     pe.Pipeline = null;
+                }
+            }
+
+            if (e.NewItems != null)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    var pe = (ProcessingElement)item;
+                    pe.Pipeline = this;
+                    pe.PropertyChanged += Pe_PropertyChanged;
                 }
             }
 

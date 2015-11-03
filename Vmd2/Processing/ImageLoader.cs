@@ -20,7 +20,8 @@ namespace Vmd2.Processing
             {
                 if (value != path)
                 {
-                    path = value; cache = null;
+                    path = value;
+                    cache = null;
                     OnPropertyChanged();
                 }
             }

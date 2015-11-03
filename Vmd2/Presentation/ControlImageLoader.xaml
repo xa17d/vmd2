@@ -8,6 +8,9 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
         <TextBlock>Folder:</TextBlock>
-        <TextBox Text="{Binding Path}"></TextBox>
+        <DockPanel>
+            <Button DockPanel.Dock="Right" Width="20" Click="Button_SelectFolder_Click">...</Button>
+            <TextBox Text="{Binding Path}"></TextBox>
+        </DockPanel>
     </StackPanel>
 </UserControl>

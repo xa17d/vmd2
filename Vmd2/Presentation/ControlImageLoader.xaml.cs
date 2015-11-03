@@ -26,5 +26,10 @@ namespace Vmd2.Presentation
         {
             InitializeComponent();
         }
+
+        private void Button_SelectFolder_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
