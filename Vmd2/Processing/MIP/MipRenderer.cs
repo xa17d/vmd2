@@ -5,13 +5,18 @@ namespace Vmd2.Processing.MIP
 {
     class MipRenderer : Renderer
     {
-        public MipRenderer(Windowing window)
+        public MipRenderer()
         {
-
-            this.window = window;
+            this.Window = new Windowing();
+            this.Window.PropertyChanged += Window_PropertyChanged;
         }
 
-        private Windowing window;
+        private void Window_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("Window");
+        }
+
+        public Windowing Window { private set; get; }
 
         protected override void OnRenderPixel(Image3D image, DisplayImage display, int x, int y)
         {
@@ -21,7 +26,7 @@ namespace Vmd2.Processing.MIP
                 mipValue = Math.Max(mipValue, image[x, y, z]);
             }
 
-            display.SetPixel(x, y, window.GetColor(mipValue));
+            display.SetPixel(x, y, Window.GetColor(mipValue));
         }
     }
 }

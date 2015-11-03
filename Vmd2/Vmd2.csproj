@@ -139,6 +139,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Presentation\MIP\ControlMip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Presentation\PeContainer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -156,8 +160,9 @@
     <Compile Include="Presentation\Mapping\ControlWindowing.xaml.cs">
       <DependentUpon>ControlWindowing.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Presentation\Mapping\WindowingItem.cs" />
-    <Compile Include="Presentation\Mapping\WindowingVm.cs" />
+    <Compile Include="Presentation\MIP\ControlMip.xaml.cs">
+      <DependentUpon>ControlMip.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\PeContainer.xaml.cs">
       <DependentUpon>PeContainer.xaml</DependentUpon>
     </Compile>

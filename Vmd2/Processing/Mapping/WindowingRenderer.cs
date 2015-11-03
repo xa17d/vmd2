@@ -15,7 +15,7 @@ namespace Vmd2.Processing.Mapping
             OnPropertyChanged("Window");
         }
 
-        public Windowing Window { get; }
+        public Windowing Window { private set; get; }
 
         protected override void OnValidate(Image3D image)
         {
