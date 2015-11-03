@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Vmd2.Processing
 {
-    class Image3D
+    public class Image3D
     {
         private short[,,] data;
 
@@ -26,6 +26,39 @@ namespace Vmd2.Processing
         {
             get { return data[x, y, z]; }
             set { data[x, y, z] = (short)value; }
+        }
+
+        public double[,] GetArea(int x, int y, int z, int xLength, int yLength)
+        {
+            if(xLength % 2 == 0 || yLength % 2 == 0)
+            {
+                throw new ArgumentException("illegal filter size");
+            }
+
+            int xl = Convert.ToInt32(Math.Floor((decimal)xLength / 2));
+            int yl = Convert.ToInt32(Math.Floor((decimal)yLength / 2));
+
+            double[,] area = new double[xLength, yLength];
+            for (int i = x - xl; i <= x + xl; i++)
+            {
+                for (int j = y - yl; j <= y + yl; j++)
+                {
+                    if (i < 0 || i >= LengthX)
+                    {
+                        area[i - x + xl, j - y + yl] = 0;
+                    }
+                    else if (j < 0 || j >= LengthY)
+                    {
+                        area[i - x + xl, j - y + yl] = 0;
+                    }
+                    else
+                    {
+                        area[i - x + xl, j - y + yl] = this[i, j, z];
+                    }
+                }
+            }
+
+            return area;
         }
     }
 }
