@@ -123,6 +123,11 @@ namespace Vmd2.Processing
             // Attention: start at 1, beacause 0 is null because it was processed in this Thread
             for (int i = 1; i < threads.Length; i++)
             {
+                while (threads[i].ThreadState == ThreadState.Unstarted)
+                {
+                    Thread.Sleep(0);
+                }
+
                 threads[i].Join();
             }
 

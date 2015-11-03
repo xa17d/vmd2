@@ -11,7 +11,11 @@ using Vmd2.Processing.Helper;
 using Vmd2.Processing.TransferFunctions;
 using Vmd2.Processing.Mapping;
 using Vmd2.Processing.MIP;
+<<<<<<< HEAD
 using System.Windows.Threading;
+=======
+using Vmd2.Processing.Filter;
+>>>>>>> 5d97d204a74e92c5562a2cf9f5e9a216d1be7fb7
 
 namespace Vmd2.Presentation
 {
@@ -38,7 +42,6 @@ namespace Vmd2.Presentation
 
         private ProcessingPipeline pipeline;
         private bool pipelineDirty = false;
-        private Thread processThread = null;
 
         private DisplayImage display;
 
@@ -53,21 +56,10 @@ namespace Vmd2.Presentation
 
         private void ProcessPipelineAsync()
         {
-            var thread = processThread;
-            if (thread != null)
-            {
-                if (thread.IsAlive)
-                {
-                    thread.Abort();
-                }
-            }
-
-            thread = new Thread(new ThreadStart(ProcessPipeline));
-            thread.IsBackground = true;
-            thread.Start();
+            ThreadPool.QueueUserWorkItem(new WaitCallback(ProcessPipeline), null);
         }
 
-        private void ProcessPipeline()
+        private void ProcessPipeline(object state)
         {
             Log.I("===== Pipeline Start =====");
             pipeline.Process();
@@ -88,6 +80,7 @@ namespace Vmd2.Presentation
         {
             processingElements.ItemsSource = pipeline;
 
+<<<<<<< HEAD
             // Show ProcessingControls:
             foreach (var item in ProcessingControl.FindAllControls())
             {
@@ -97,10 +90,17 @@ namespace Vmd2.Presentation
                 button.Click += Button_Add_Click;
                 panelAdd.Children.Add(button);
             }
-
-            // Inital Process
-            ProcessPipelineAsync();
         }
+=======
+                //TODO integrate in ui
+                //FilterRenderer filter = new GaussianFilter3x3();
+                FilterRenderer filter = new GaussianFilter7x7();
+                //FilterRenderer filter = new GradientFilter3x3();
+                //filter.Activated = false;
+
+                renderWindowing.Image = image;
+                renderWindowing.Renderer = new WindowingRenderer(image, display, window, filter);
+>>>>>>> 5d97d204a74e92c5562a2cf9f5e9a216d1be7fb7
 
         private void Button_Add_Click(object sender, RoutedEventArgs e)
         {

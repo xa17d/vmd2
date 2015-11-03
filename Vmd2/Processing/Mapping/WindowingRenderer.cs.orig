@@ -1,0 +1,57 @@
+<<<<<<< HEAD
+﻿using System;
+=======
+﻿using Vmd2.Processing.Filter;
+>>>>>>> 5d97d204a74e92c5562a2cf9f5e9a216d1be7fb7
+
+namespace Vmd2.Processing.Mapping
+{
+    class WindowingRenderer : Renderer
+    {
+<<<<<<< HEAD
+        public WindowingRenderer()
+        {
+            this.Window = new Windowing();
+            this.Window.PropertyChanged += Window_PropertyChanged;
+        }
+
+        private void Window_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("Window");
+=======
+        public WindowingRenderer(Image3D image, DisplayImage display, Windowing window, FilterRenderer filter) : base(display)
+        {
+            this.image = image;
+            this.display = display;
+            this.Window = window;
+            this.filter = filter;
+            Slice = 0;
+>>>>>>> 5d97d204a74e92c5562a2cf9f5e9a216d1be7fb7
+        }
+
+        public Windowing Window { get; }
+<<<<<<< HEAD
+=======
+        private Image3D image;
+        private DisplayImage display;
+        private FilterRenderer filter;
+>>>>>>> 5d97d204a74e92c5562a2cf9f5e9a216d1be7fb7
+
+        protected override void OnValidate(Image3D image)
+        {
+<<<<<<< HEAD
+            if (image.LengthZ != 1) { throw new Exception("can only render Images with exactly one slice"); }
+=======
+            //var voxel = image[x, y, Slice];
+            var voxel = filter.FilterPixel(x, y, Slice, image);
+            display.SetPixel(x, y, Window.GetColor(voxel));
+>>>>>>> 5d97d204a74e92c5562a2cf9f5e9a216d1be7fb7
+        }
+
+        protected override void OnRenderPixel(Image3D image, DisplayImage display, int x, int y)
+        {
+            var voxel = image[x, y, 0];
+            display.SetPixel(x, y, Window.GetColor(voxel));
+        }
+    }
+}

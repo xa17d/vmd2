@@ -11,7 +11,7 @@ namespace Vmd2.Processing.DVR
 {
     class DvrRenderer : Renderer
     {
-        private TransferFunction1D tf;
+        private TransferFunction1D tf = TransferFunction1D.Default;
         public TransferFunction1D TF
         {
             get { return tf; }

@@ -32,7 +32,6 @@ namespace Vmd2.Processing
 
             displayImage = Display.GetDisplay(w, h);
             var result = base.OnProcess(image, progress);
-            displayImage = null;
             return result;
         }
 

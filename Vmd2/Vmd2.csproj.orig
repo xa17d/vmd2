@@ -95,10 +95,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Presentation\DVR\ControlDvrRenderer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Presentation\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -120,9 +116,6 @@
     </Compile>
     <Compile Include="Presentation\ControlSlice.xaml.cs">
       <DependentUpon>ControlSlice.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Presentation\DVR\ControlDvrRenderer.xaml.cs">
-      <DependentUpon>ControlDvrRenderer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -165,12 +158,15 @@
     <Compile Include="Presentation\TransferFunctions\TransferFunctionItem.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />
     <Compile Include="Processing\DisplayImage.cs" />
+<<<<<<< HEAD
     <Compile Include="Processing\IDisplay.cs" />
     <Compile Include="Processing\ImageLoader.cs" />
+=======
     <Compile Include="Processing\Filter\FilterRenderer.cs" />
     <Compile Include="Processing\Filter\GaussianFilter7x7.cs" />
     <Compile Include="Processing\Filter\GaussianFilter3x3.cs" />
     <Compile Include="Processing\Filter\GradientFilter3x3.cs" />
+>>>>>>> 5d97d204a74e92c5562a2cf9f5e9a216d1be7fb7
     <Compile Include="Processing\MIP\MipRenderer.cs" />
     <Compile Include="Processing\DVR\DvrRenderer.cs" />
     <Compile Include="Processing\Helper\ColorHelper.cs" />
