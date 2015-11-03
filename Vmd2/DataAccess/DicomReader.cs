@@ -45,7 +45,7 @@ namespace Vmd2.DataAccess
 
             if (dimensions.Length != 3)
             {
-                throw new Exception("Image must have 3 dimensions!");
+                throw new LogException("Image must have 3 dimensions!");
             }
 
             var image = new Image3D(dimensions[2], dimensions[1], dimensions[0]);

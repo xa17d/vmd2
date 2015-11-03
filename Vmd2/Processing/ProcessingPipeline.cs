@@ -45,7 +45,7 @@ namespace Vmd2.Processing
         private void InvokePipelineChanged()
         {
             var e = PipelineChanged;
-            if (e!=null)
+            if (e != null)
             {
                 e(this, EventArgs.Empty);
             }
@@ -54,10 +54,14 @@ namespace Vmd2.Processing
         public void Process()
         {
             Image3D image = null;
-            foreach (var pe in this.ToArray())
+            try
             {
-                image = pe.Process(image);
+                foreach (var pe in this.ToArray())
+                {
+                    image = pe.Process(image);
+                }
             }
+            catch (LogException) { }
         }
 
         public event EventHandler PipelineChanged;

@@ -35,6 +35,12 @@ namespace Vmd2.Processing
                     progress.Abort();
                     throw;
                 }
+                catch (LogException e)
+                {
+                    progress.Abort();
+                    Log.E(e.Message);
+                    throw;
+                }
             }
         }
 

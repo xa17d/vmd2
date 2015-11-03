@@ -114,6 +114,7 @@
     <Compile Include="DataAccess\DicomReader.cs" />
     <Compile Include="DataAccess\TestData.cs" />
     <Compile Include="Logging\Log.cs" />
+    <Compile Include="Logging\MessageType.cs" />
     <Compile Include="Logging\Progress.cs" />
     <Compile Include="Logging\ProgressStatus.cs" />
     <Compile Include="Presentation\ControlImageLoader.xaml.cs">
@@ -190,6 +191,7 @@
     <Compile Include="Processing\ProcessingElement.cs" />
     <Compile Include="Processing\ProcessingElement2D.cs" />
     <Compile Include="Processing\ProcessingElement3D.cs" />
+    <Compile Include="Processing\LogException.cs" />
     <Compile Include="Processing\ProcessingPipeline.cs" />
     <Compile Include="Processing\Renderer.cs" />
     <Compile Include="Processing\Slice.cs" />

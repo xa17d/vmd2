@@ -39,14 +39,14 @@ namespace Vmd2.Presentation
             UpdateProgress();
         }
 
-        internal void Write(string message, Progress progress)
+        internal void Write(string message, Progress progress, MessageType type)
         {
-            Dispatcher.Invoke(new WriteDelegate(UiWrite), TimeSpan.FromSeconds(5), message, progress);
+            Dispatcher.Invoke(new WriteDelegate(UiWrite), TimeSpan.FromSeconds(5), message, progress, type);
         }
 
-        private delegate void WriteDelegate(string message, Progress progress);
+        private delegate void WriteDelegate(string message, Progress progress, MessageType type);
 
-        private void UiWrite(string message, Progress progress)
+        private void UiWrite(string message, Progress progress, MessageType type)
         {
             UpdateProgress();
 
@@ -55,6 +55,12 @@ namespace Vmd2.Presentation
                 var textBlock = new TextBlock();
                 textBlock.Text = message;
                 stack.Children.Add(textBlock);
+
+                if (type == MessageType.Error)
+                {
+                    textBlock.Foreground = Brushes.OrangeRed;
+                    textBlock.FontWeight = FontWeights.Bold;
+                }
             }
             else
             {

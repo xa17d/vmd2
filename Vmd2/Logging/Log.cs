@@ -11,25 +11,30 @@ namespace Vmd2.Logging
     {
         public static void I(string message)
         {
-            WriteMessage(message, null);
+            WriteMessage(message, null, MessageType.Info);
         }
 
         public static Progress P(string message)
         {
             var progress = new Progress();
-            WriteMessage(message, progress);
+            WriteMessage(message, progress, MessageType.Info);
             return progress;
         }
 
-        private static void WriteMessage(string message, Progress progress)
+        private static void WriteMessage(string message, Progress progress, MessageType type)
         {
             var c = Control;
             if (c!= null)
             {
-                c.Write(message, progress);
+                c.Write(message, progress, type);
             }
         }
 
         public static ControlLog Control { get; set; }
+
+        public static void E(string message)
+        {
+            WriteMessage(message, null, MessageType.Error);
+        }
     }
 }
