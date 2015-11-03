@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace Vmd2.Processing.Mapping
 {
-    public class Windowing
+    public class Windowing : NotifyPropertyChanged
     {
         public Windowing()
         {
@@ -12,8 +12,19 @@ namespace Vmd2.Processing.Mapping
             WindowWidth = 300;
         }
 
-        public double WindowCenter { get; set; }
-        public double WindowWidth { get; set; }
+        private double windowCenter;
+        public double WindowCenter
+        {
+            get { return windowCenter; }
+            set { if (value != windowCenter) { windowCenter = value; OnPropertyChanged(); } }
+        }
+
+        private double windowWidth;
+        public double WindowWidth
+        {
+            get { return windowWidth; }
+            set { if (value != windowWidth) { windowWidth = value; OnPropertyChanged(); } }
+        }
 
         public Color GetColor(double value)
         {

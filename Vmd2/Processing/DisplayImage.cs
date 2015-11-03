@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace Vmd2.Processing
 {
-    class DisplayImage
+    public class DisplayImage
     {
         public DisplayImage(int width, int height)
         {

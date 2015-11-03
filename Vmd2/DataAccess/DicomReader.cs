@@ -32,7 +32,7 @@ namespace Vmd2.DataAccess
         public double MinValue { get; private set; }
         public double MaxValue { get; private set; }
 
-        public Image3D ReadImage3D()
+        public Image3D ReadImage3D(Progress progress)
         {
             // based on http://www.vtk.org/Wiki/VTK/Examples/Cxx/ImageData/IterateImageData
 
@@ -53,24 +53,21 @@ namespace Vmd2.DataAccess
             double min = double.MaxValue;
             double max = double.MinValue;
 
-            using (var progress = Log.P("Read in image..."))
+            for (int z = 0; z < dimensions[2]; z++)
             {
-                for (int z = 0; z < dimensions[2]; z++)
+                for (int y = 0; y < dimensions[1]; y++)
                 {
-                    for (int y = 0; y < dimensions[1]; y++)
+                    for (int x = 0; x < dimensions[0]; x++)
                     {
-                        for (int x = 0; x < dimensions[0]; x++)
-                        {
-                            double voxel = imageData.GetScalarComponentAsDouble(x, y, z, 0) * rescaleSlope + rescaleOffset;
-                            image[x, y, z] = voxel;
+                        double voxel = imageData.GetScalarComponentAsDouble(x, y, z, 0) * rescaleSlope + rescaleOffset;
+                        image[x, y, z] = voxel;
 
-                            min = Math.Min(min, voxel);
-                            max = Math.Max(max, voxel);
-                        }
+                        min = Math.Min(min, voxel);
+                        max = Math.Max(max, voxel);
                     }
-
-                    progress.Update((z / (double)image.LengthZ));
                 }
+
+                progress.Update((z / (double)image.LengthZ));
             }
 
             Log.I("Image loaded. min: " + min + "; max: " + max);

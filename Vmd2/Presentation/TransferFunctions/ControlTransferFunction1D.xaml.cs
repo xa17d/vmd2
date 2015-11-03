@@ -15,7 +15,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Vmd2.Presentation.ViewModels;
 using Vmd2.Processing.TransferFunctions;
 
 namespace Vmd2.Presentation.TransferFunctions
@@ -36,6 +35,16 @@ namespace Vmd2.Presentation.TransferFunctions
 
         private Brush brushStrokeSelected = new SolidColorBrush(Colors.OrangeRed);
         private Brush brushStroke = new SolidColorBrush(Colors.Black);
+
+        public event EventHandler TransferFunctionChanged;
+        private void InvokeTransferFunctionChanged()
+        {
+            var e = TransferFunctionChanged;
+            if (e!=null)
+            {
+                e(this, EventArgs.Empty);
+            }
+        }
 
         private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -74,6 +83,8 @@ namespace Vmd2.Presentation.TransferFunctions
                     canvasTf.Children.Remove(((TransferFunctionItem)item).UiElement);
                 }
             }
+
+            InvokeTransferFunctionChanged();
         }
 
         private Point mouseDownPosition;
@@ -146,6 +157,8 @@ namespace Vmd2.Presentation.TransferFunctions
                     Update((TransferFunctionItem)rectangle.DataContext);
                 }
             }
+
+            InvokeTransferFunctionChanged();
         }
 
         private TransferFunction1DVm Vm { get { return (DataContext as TransferFunction1DVm); } }

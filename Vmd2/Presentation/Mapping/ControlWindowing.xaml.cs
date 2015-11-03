@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Windows.Controls;
+using Vmd2.Processing.Mapping;
 
 namespace Vmd2.Presentation.Mapping
 {
     /// <summary>
     /// Interaction logic for ControlWindowing.xaml
     /// </summary>
+    [ProcessingControl(typeof(WindowingRenderer))]
     public partial class ControlWindowing : UserControl
     {
         public ControlWindowing()

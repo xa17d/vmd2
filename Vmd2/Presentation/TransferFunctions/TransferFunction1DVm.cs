@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Vmd2.Presentation.ViewModels;
 using Vmd2.Processing.TransferFunctions;
 
 namespace Vmd2.Presentation.TransferFunctions

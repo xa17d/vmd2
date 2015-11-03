@@ -1,5 +1,4 @@
-﻿using Vmd2.Presentation.ViewModels;
-
+﻿
 namespace Vmd2.Presentation.Mapping
 {
     class WindowingItem : NotifyPropertyChanged

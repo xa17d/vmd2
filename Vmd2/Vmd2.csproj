@@ -64,7 +64,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -84,7 +83,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Presentation\ControlImageLoader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Presentation\ControlLog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\ControlSlice.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -101,8 +108,14 @@
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\Progress.cs" />
     <Compile Include="Logging\ProgressStatus.cs" />
+    <Compile Include="Presentation\ControlImageLoader.xaml.cs">
+      <DependentUpon>ControlImageLoader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\ControlLog.xaml.cs">
       <DependentUpon>ControlLog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\ControlSlice.xaml.cs">
+      <DependentUpon>ControlSlice.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -112,7 +125,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Presentation\PeContainer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Presentation\TransferFunctions\ControlTransferFunction1D.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\TransferFunctions\ControlTransferFunction1DRenderer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -123,25 +144,32 @@
     </Compile>
     <Compile Include="Presentation\Mapping\WindowingItem.cs" />
     <Compile Include="Presentation\Mapping\WindowingVm.cs" />
+    <Compile Include="Presentation\PeContainer.xaml.cs">
+      <DependentUpon>PeContainer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\ProcessingControl.cs" />
     <Compile Include="Presentation\TransferFunctions\ControlTransferFunction1D.xaml.cs">
       <DependentUpon>ControlTransferFunction1D.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\TransferFunctions\ControlTransferFunction1DRenderer.xaml.cs">
+      <DependentUpon>ControlTransferFunction1DRenderer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\TransferFunctions\TransferFunction1DVm.cs" />
     <Compile Include="Presentation\TransferFunctions\TransferFunctionItem.cs" />
-    <Compile Include="Presentation\ViewModels\NotifyPropertyChanged.cs" />
-    <Compile Include="Presentation\ViewModels\RenderMip.cs" />
-    <Compile Include="Presentation\ViewModels\RenderDvr.cs" />
-    <Compile Include="Presentation\ViewModels\RenderWindowing.cs" />
-    <Compile Include="Presentation\ViewModels\RenderSlice.cs" />
-    <Compile Include="Presentation\ViewModels\RenderVm.cs" />
+    <Compile Include="NotifyPropertyChanged.cs" />
     <Compile Include="Processing\DisplayImage.cs" />
-    <Compile Include="Processing\Helper\GaussianFilter.cs" />
+    <Compile Include="Processing\IDisplay.cs" />
+    <Compile Include="Processing\ImageLoader.cs" />
     <Compile Include="Processing\MIP\MipRenderer.cs" />
     <Compile Include="Processing\DVR\DvrRenderer.cs" />
     <Compile Include="Processing\Helper\ColorHelper.cs" />
     <Compile Include="Processing\Image3D.cs" />
+    <Compile Include="Processing\ProcessingElement.cs" />
+    <Compile Include="Processing\ProcessingElement2D.cs" />
+    <Compile Include="Processing\ProcessingElement3D.cs" />
+    <Compile Include="Processing\ProcessingPipeline.cs" />
     <Compile Include="Processing\Renderer.cs" />
-    <Compile Include="Processing\RendererPixel.cs" />
+    <Compile Include="Processing\Slice.cs" />
     <Compile Include="Processing\TransferFunctions\TransferFunction1D.cs" />
     <Compile Include="Processing\TransferFunctions\TransferFunction1DRenderer.cs" />
     <Compile Include="Processing\Mapping\Windowing.cs" />

@@ -5,151 +5,122 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Vmd2.DataAccess;
 using Vmd2.Logging;
-using Vmd2.Presentation.ViewModels;
 using Vmd2.Processing;
 using Vmd2.Processing.DVR;
 using Vmd2.Processing.Helper;
 using Vmd2.Processing.TransferFunctions;
 using Vmd2.Processing.Mapping;
 using Vmd2.Processing.MIP;
+using System.Windows.Threading;
 
 namespace Vmd2.Presentation
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IDisplay
     {
         public MainWindow()
         {
             InitializeComponent();
             Log.Control = controlLog;
+            pipeline = new ProcessingPipeline();
+            pipeline.Add(new ImageLoader());
+            pipeline.Add(new Slice());
+            pipeline.Add(new TransferFunction1DRenderer() { Display = this });
+            pipeline.PipelineChanged += Pipeline_PipelineChanged;
+
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(100);
+            timer.Tick += Timer_Tick;
+            timer.Start();
         }
 
+        private ProcessingPipeline pipeline;
+        private bool pipelineDirty = false;
+
         private DisplayImage display;
-        private RenderDvr renderDvr;
-        private RenderSlice renderSlice;
-        private RenderWindowing renderWindowing;
-        private Windowing window;
-        private RenderMip renderMip;
-        private Image3D image;
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            if (pipelineDirty)
+            {
+                pipelineDirty = false;
+                ProcessPipelineAsync();
+            }
+        }
+
+        private void ProcessPipelineAsync()
+        {
+            ThreadPool.QueueUserWorkItem(new WaitCallback(ProcessPipeline), null);
+        }
+
+        private void ProcessPipeline(object state)
+        {
+            Log.I("===== Pipeline Start =====");
+            pipeline.Process();
+
+            if (display != null)
+            {
+                Dispatcher.Invoke(display.Update);
+            }
+            Log.I("===== Done =====");
+        }
+
+        private void Pipeline_PipelineChanged(object sender, EventArgs e)
+        {
+            pipelineDirty = true;
+        }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            renderSlice = new RenderSlice();
-            renderDvr = new RenderDvr();
-            renderWindowing = new RenderWindowing();
-            renderMip = new RenderMip();
+            processingElements.ItemsSource = pipeline;
 
-            tabItemDvr.DataContext = renderDvr;
-            tabItemSlice.DataContext = renderSlice;
-            tabItemWindowing.DataContext = renderWindowing;
-            tabItemMip.DataContext = renderMip;
-
-            ThreadPool.QueueUserWorkItem(new WaitCallback(LoadImage), null);
-
-            int max = 1100;
-            controlTfSlice.AddItem(max * 0.0, ColorHelper.Alpha(0, Colors.Black));
-            controlTfSlice.AddItem(max * 0.2, ColorHelper.Alpha(200, Colors.Blue));
-            controlTfSlice.AddItem(max * 0.4, ColorHelper.Alpha(200, Colors.Red));
-            controlTfSlice.AddItem(max * 0.6, ColorHelper.Alpha(200, Colors.Yellow));
-            controlTfSlice.AddItem(max * 0.8, ColorHelper.Alpha(200, Colors.Violet));
-            controlTfSlice.AddItem(max * 1.0, ColorHelper.Alpha(200, Colors.Lime));
-        }
-
-        private void LoadImage(object state)
-        {
-            //string testPath = @"MANIX\CER-CT\ANGIO CT";
-            //string testPath = @"BRAINIX\SOUS - 702";
-            //string testPath = @"BRAINIX\T2W-FE-EPI - 501";
-            string testPath = @"vtkBrain";
-
-            double min, max;
-            using (var reader = new DicomReader(TestData.GetPath(testPath)))
+            // Show ProcessingControls:
+            foreach (var item in ProcessingControl.FindAllControls())
             {
-                image = reader.ReadImage3D();
-
-                min = reader.MinValue;
-                max = reader.MaxValue;
-            }
-
-
-            var tf = new TransferFunction1D();
-            this.window = new Windowing();
-
-            tf.Add(max * 0.0, ColorHelper.Alpha(0, Colors.Black));
-            tf.Add(max * 0.2, ColorHelper.Alpha(200, Colors.Blue));
-            tf.Add(max * 0.4, ColorHelper.Alpha(200, Colors.Red));
-            tf.Add(max * 0.6, ColorHelper.Alpha(200, Colors.Yellow));
-            tf.Add(max * 0.8, ColorHelper.Alpha(200, Colors.Violet));
-            tf.Add(max * 1.0, ColorHelper.Alpha(200, Colors.Lime));
-
-            UpdateVms(image, tf);
-        }
-
-        private void UpdateVms(Image3D image, TransferFunction1D tf)
-        {
-            Dispatcher.Invoke(new Action(() =>
-            {
-                display = new DisplayImage(image.LengthX, image.LengthY);
-
-                renderDvr.Image = image;
-                renderDvr.Renderer = new DvrRenderer(image, display, tf) { ThreadCount = 8 };
-
-                renderSlice.Image = image;
-                renderSlice.Renderer = new TransferFunction1DRenderer(image, display, tf);
-
-                renderWindowing.Image = image;
-                renderWindowing.Renderer = new WindowingRenderer(image, display, window);
-
-                renderMip.Image = image;
-                renderMip.Renderer = new MipRenderer(image, display, window) { ThreadCount = 8 };
-
-                sliderTf.Maximum = image.LengthZ - 1;
-                sliderWindowing.Maximum = image.LengthZ - 1;
-
-                this.displayImage.Source = display.GetBitmap();
-            }));
-
-        }
-
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.Source is TabControl)
-            {
-                var vm = SelectedVm;
-                if (vm != null)
-                {
-                    vm.Render();
-                }
+                var button = new Button();
+                button.Content = item.Name;
+                button.Tag = item;
+                button.Click += Button_Add_Click;
+                panelAdd.Children.Add(button);
             }
         }
 
-        private RenderVm SelectedVm
+        private void Button_Add_Click(object sender, RoutedEventArgs e)
         {
-            get
+            var processingElementType = (Type)((Button)sender).Tag;
+
+            var element = (ProcessingElement)Activator.CreateInstance(processingElementType);
+
+            var renderer = (element as Renderer);
+            if (renderer != null)
             {
-                var tabItem = (tabControl.SelectedItem as FrameworkElement);
-                if (tabItem != null)
-                {
-                    var vm = (tabItem.DataContext as RenderVm);
-                    if (vm != null)
+                renderer.Display = this;
+            }
+
+            pipeline.Add(element);
+        }
+
+        private void buttonProcessPipeline_Click(object sender, RoutedEventArgs e)
+        {
+            ProcessPipelineAsync();
+        }
+
+        DisplayImage IDisplay.GetDisplay(int width, int height)
+        {
+            if (display == null || display.Width != width || display.Height != height)
+            {
+                Dispatcher.Invoke(
+                    () =>
                     {
-                        return vm;
+                        display = new DisplayImage(width, height);
+                        displayImage.Source = display.GetBitmap();
                     }
-                }
-                return null;
+                );
             }
-        }
 
-        private void Button_Render_Click(object sender, RoutedEventArgs e)
-        {
-            var vm = SelectedVm;
-            if (vm != null)
-            {
-                UpdateVms(image, controlTfSlice.CreateTransferFunction());
-                vm.Render();
-            }
+            return display;
         }
     }
 }

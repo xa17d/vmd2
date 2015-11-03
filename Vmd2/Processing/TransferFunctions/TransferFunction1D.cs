@@ -10,9 +10,6 @@ namespace Vmd2.Processing.TransferFunctions
 {
     public class TransferFunction1D
     {
-        public TransferFunction1D()
-        { }
-
         public void Add(double value, Color color)
         {
             TFItem newItem = new TFItem(value, color);
@@ -84,6 +81,17 @@ namespace Vmd2.Processing.TransferFunctions
             public double Value;
             public Color Color;
             public TFItem Next;
+        }
+
+        public static TransferFunction1D Default
+        {
+            get
+            {
+                var tf = new TransferFunction1D();
+                tf.Add(0, Colors.Black);
+                tf.Add(1000, Colors.White);
+                return tf;
+            }
         }
     }
 }

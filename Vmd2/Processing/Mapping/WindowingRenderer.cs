@@ -1,29 +1,31 @@
-﻿namespace Vmd2.Processing.Mapping
+﻿using System;
+
+namespace Vmd2.Processing.Mapping
 {
-    class WindowingRenderer : RendererPixel
+    class WindowingRenderer : Renderer
     {
-        public WindowingRenderer(Image3D image, DisplayImage display, Windowing window) : base(display)
+        public WindowingRenderer()
         {
-            this.image = image;
-            this.display = display;
-            this.Window = window;
-            this.Slice = 0;
+            this.Window = new Windowing();
+            this.Window.PropertyChanged += Window_PropertyChanged;
         }
 
-        public int Slice { get; set; }
+        private void Window_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("Window");
+        }
+
         public Windowing Window { get; }
-        private Image3D image;
-        private DisplayImage display;
 
-        protected override void OnRenderPixel(int x, int y)
+        protected override void OnValidate(Image3D image)
         {
-            var voxel = image[x, y, Slice];
-            display.SetPixel(x, y, Window.GetColor(voxel));
+            if (image.LengthZ != 1) { throw new Exception("can only render Images with exactly one slice"); }
         }
 
-        public override string ToString()
+        protected override void OnRenderPixel(Image3D image, DisplayImage display, int x, int y)
         {
-            return GetType().Name + " [slice: " + Slice + "]";
+            var voxel = image[x, y, 0];
+            display.SetPixel(x, y, Window.GetColor(voxel));
         }
     }
 }

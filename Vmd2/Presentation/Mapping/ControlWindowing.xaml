@@ -20,12 +20,12 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock VerticalAlignment="Center" Grid.Row="0" Grid.Column="0">Center:</TextBlock>
-            <Slider x:Name="sliderCenter" Grid.Row="0" Grid.Column="1" SmallChange="10" LargeChange="100" Value="{Binding WindowCenter}" />
-            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding WindowCenter}" IsEnabled="False"></TextBox>
+            <Slider x:Name="sliderCenter" Grid.Row="0" Grid.Column="1" SmallChange="10" LargeChange="100" Value="{Binding Window.WindowCenter}" />
+            <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Window.WindowCenter}" IsEnabled="False"></TextBox>
 
             <TextBlock VerticalAlignment="Center" Grid.Row="1" Grid.Column="0">Width:</TextBlock>
-            <Slider x:Name="sliderWidth" Grid.Row="1" Grid.Column="1" SmallChange="10" LargeChange="100" Value="{Binding WindowWidth}" />
-            <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding WindowWidth}" IsEnabled="False"></TextBox>
+            <Slider x:Name="sliderWidth" Grid.Row="1" Grid.Column="1" SmallChange="10" LargeChange="100" Value="{Binding Window.WindowWidth}" />
+            <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding Window.WindowWidth}" IsEnabled="False"></TextBox>
         </Grid>
     </StackPanel>
 </UserControl>

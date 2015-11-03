@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using Vmd2.Presentation.ViewModels;
 
 namespace Vmd2.Presentation.Mapping
 {

@@ -9,20 +9,16 @@ using Vmd2.Processing.TransferFunctions;
 
 namespace Vmd2.Processing.DVR
 {
-    class DvrRenderer : RendererPixel
+    class DvrRenderer : Renderer
     {
-        public DvrRenderer(Image3D image, DisplayImage display, TransferFunction1D tf) : base(display)
+        private TransferFunction1D tf;
+        public TransferFunction1D TF
         {
-            this.image = image;
-            this.display = display;
-            this.tf = tf;
+            get { return tf; }
+            set { if (value != tf) { tf = value; OnPropertyChanged(); } }
         }
 
-        private Image3D image;
-        private DisplayImage display;
-        private TransferFunction1D tf;
-
-        protected override void OnRenderPixel(int x, int y)
+        protected override void OnRenderPixel(Image3D image, DisplayImage display, int x, int y)
         {
             var voxelColor = Colors.Black;
             for (int z = image.LengthZ - 1; z >= 0; z--)
@@ -32,11 +28,6 @@ namespace Vmd2.Processing.DVR
             }
 
             display.SetPixel(x, y, voxelColor);
-        }
-
-        public override string ToString()
-        {
-            return GetType().Name;
         }
     }
 }
