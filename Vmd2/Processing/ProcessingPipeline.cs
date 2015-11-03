@@ -19,8 +19,8 @@ namespace Vmd2.Processing
                 foreach (var item in e.OldItems)
                 {
                     var pe = (ProcessingElement)item;
-                    pe.PropertyChanged -= Pe_PropertyChanged;
-                    pe.Pipeline = null;
+                    //pe.PropertyChanged -= Pe_PropertyChanged;
+                    //pe.Pipeline = null;
                 }
             }
 
@@ -54,7 +54,7 @@ namespace Vmd2.Processing
         public void Process()
         {
             Image3D image = null;
-            foreach (var pe in this)
+            foreach (var pe in this.ToArray())
             {
                 image = pe.Process(image);
             }

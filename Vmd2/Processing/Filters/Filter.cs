@@ -10,7 +10,7 @@ namespace Vmd2.Processing.Filters
         private int columnCount;
         private double divider;
 
-        public Filter(double[,] filter)
+        public Filter(double[,] filter) : base(8, false)
         {
             this.filter = filter;
             rowCount = filter.GetLength(0);
