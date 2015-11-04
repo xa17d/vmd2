@@ -19,9 +19,9 @@ namespace Vmd2.Presentation.Filter
     /// <summary>
     /// Interaction logic for ControlFilter.xaml
     /// </summary>
-    [ProcessingControl(typeof(GaussianFilter3x3))]
-    [ProcessingControl(typeof(GaussianFilter7x7))]
-    [ProcessingControl(typeof(GradientFilter3x3))]
+    [ProcessingControl(typeof(Gaussian2DFilter3x3))]
+    [ProcessingControl(typeof(Gaussian2DFilter7x7))]
+    [ProcessingControl(typeof(Laplace2DFilter3x3))]
     public partial class ControlFilter : UserControl
     {
         public ControlFilter()

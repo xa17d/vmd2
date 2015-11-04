@@ -171,12 +171,13 @@
     <Compile Include="Presentation\TransferFunctions\TransferFunctionItem.cs" />
     <Compile Include="NotifyPropertyChanged.cs" />
     <Compile Include="Processing\DisplayImage.cs" />
+    <Compile Include="Processing\Filters\Filter3D.cs" />
     <Compile Include="Processing\IDisplay.cs" />
     <Compile Include="Processing\ImageLoader.cs" />
-    <Compile Include="Processing\Filters\Filter.cs" />
-    <Compile Include="Processing\Filters\GaussianFilter7x7.cs" />
-    <Compile Include="Processing\Filters\GaussianFilter3x3.cs" />
-    <Compile Include="Processing\Filters\GradientFilter3x3.cs" />
+    <Compile Include="Processing\Filters\Filter2D.cs" />
+    <Compile Include="Processing\Filters\Gaussian2DFilter7x7.cs" />
+    <Compile Include="Processing\Filters\Gaussian2DFilter3x3.cs" />
+    <Compile Include="Processing\Filters\Laplace2DFilter3x3.cs" />
     <Compile Include="Processing\MIP\MipRenderer.cs" />
     <Compile Include="Processing\DVR\DvrRenderer.cs" />
     <Compile Include="Processing\Helper\ColorHelper.cs" />

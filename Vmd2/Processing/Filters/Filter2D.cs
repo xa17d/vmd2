@@ -3,22 +3,22 @@ using Vmd2.Logging;
 
 namespace Vmd2.Processing.Filters
 {
-    abstract class Filter : ProcessingElement3D
+    abstract class Filter2D : ProcessingElement3D
     {
         private double[,] filter;
-        private int rowCount;
-        private int columnCount;
+        private int xCount;
+        private int yCount;
         private double divider;
 
-        public Filter(double[,] filter) : base(8, false)
+        public Filter2D(double[,] filter) : base(8, false)
         {
             this.filter = filter;
-            rowCount = filter.GetLength(0);
-            columnCount = filter.GetLength(1);
+            xCount = filter.GetLength(0);
+            yCount = filter.GetLength(1);
             divider = GetDivider();
             Activated = true;
 
-            if (rowCount % 2 == 0 || columnCount % 2 == 0)
+            if (xCount % 2 == 0 || yCount % 2 == 0)
             {
                 throw new ArgumentException("illegal filter size");
             }
@@ -35,14 +35,14 @@ namespace Vmd2.Processing.Filters
         {
             if (Activated)
             {
-                double[,] area = image.GetArea(x, y, z, columnCount, rowCount);
+                double[,,] area = image.GetArea(x, y, z, xCount, yCount, 1);
 
                 double sum = 0;
-                for (int i = 0; i < columnCount; i++)
+                for (int i = 0; i < yCount; i++)
                 {
-                    for (int j = 0; j < rowCount; j++)
+                    for (int j = 0; j < xCount; j++)
                     {
-                        sum += area[j, i] * filter[j, i];
+                        sum += area[j, i, 0] * filter[j, i];
                     }
                 }
 
@@ -56,21 +56,16 @@ namespace Vmd2.Processing.Filters
         {
             double sum = 0;
 
-            for (int i = 0; i < columnCount; i++)
+            for (int i = 0; i < yCount; i++)
             {
-                for (int j = 0; j < rowCount; j++)
+                for (int j = 0; j < xCount; j++)
                 {
                     sum += filter[j, i];
                 }
             }
 
-            //avoid dividing by zero
-            if (sum == 0)
-            {
-                sum = 1;
-            }
 
-            return sum;
+            return sum != 0 ? sum : 1;
         }
 
         protected override Image3D OnProcess(Image3D image, Progress progress)

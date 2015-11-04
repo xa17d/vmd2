@@ -31,32 +31,31 @@ namespace Vmd2.Processing
             set { data[x, y, z] = (short)value; }
         }
 
-        public double[,] GetArea(int x, int y, int z, int xLength, int yLength)
+        public double[,,] GetArea(int x, int y, int z, int xLength, int yLength, int zLength)
         {
-            if (xLength % 2 == 0 || yLength % 2 == 0)
-            {
-                throw new ArgumentException("illegal filter size");
-            }
-
             int xl = Convert.ToInt32(Math.Floor((decimal)xLength / 2));
             int yl = Convert.ToInt32(Math.Floor((decimal)yLength / 2));
+            int zl = Convert.ToInt32(Math.Floor((decimal)zLength / 2));
 
-            double[,] area = new double[xLength, yLength];
-            for (int i = x - xl; i <= x + xl; i++)
+            double[,,] area = new double[xLength, yLength, zLength];
+            for (int k = z - zl; k <= z + zl; k++)
             {
                 for (int j = y - yl; j <= y + yl; j++)
                 {
-                    if (i < 0 || i >= LengthX)
+                    for (int i = x - xl; i <= x + xl; i++)
                     {
-                        area[i - x + xl, j - y + yl] = 0;
-                    }
-                    else if (j < 0 || j >= LengthY)
-                    {
-                        area[i - x + xl, j - y + yl] = 0;
-                    }
-                    else
-                    {
-                        area[i - x + xl, j - y + yl] = this[i, j, z];
+                        if (i < 0 || i >= LengthX)
+                        {
+                            area[i - x + xl, j - y + yl, k - z + zl] = 0;
+                        }
+                        else if (j < 0 || j >= LengthY)
+                        {
+                            area[i - x + xl, j - y + yl, k - z + zl] = 0;
+                        }
+                        else
+                        {
+                            area[i - x + xl, j - y + yl, k - z + zl] = this[i, j, k];
+                        }
                     }
                 }
             }
