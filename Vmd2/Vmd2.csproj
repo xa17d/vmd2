@@ -172,6 +172,7 @@
     <Compile Include="NotifyPropertyChanged.cs" />
     <Compile Include="Processing\DisplayImage.cs" />
     <Compile Include="Processing\Filters\Filter3D.cs" />
+    <Compile Include="Processing\Filters\Gaussian3DFilter3x3.cs" />
     <Compile Include="Processing\IDisplay.cs" />
     <Compile Include="Processing\ImageLoader.cs" />
     <Compile Include="Processing\Filters\Filter2D.cs" />

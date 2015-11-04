@@ -35,14 +35,14 @@ namespace Vmd2.Processing.Filters
         {
             if (Activated)
             {
-                double[,,] area = image.GetArea(x, y, z, xCount, yCount, 1);
+                double[,] area = image.GetArea(x, y, z, xCount, yCount);
 
                 double sum = 0;
                 for (int i = 0; i < yCount; i++)
                 {
                     for (int j = 0; j < xCount; j++)
                     {
-                        sum += area[j, i, 0] * filter[j, i];
+                        sum += area[j, i] * filter[j, i];
                     }
                 }
 
