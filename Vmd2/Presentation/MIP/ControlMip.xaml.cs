@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Vmd2.Processing.Mapping;
 using Vmd2.Processing.MIP;
+using Vmd2.Processing.Segmentation;
 
 namespace Vmd2.Presentation.MIP
 {
@@ -22,6 +23,7 @@ namespace Vmd2.Presentation.MIP
     /// </summary>
     [ProcessingControl(typeof(MipRenderer))]
     [ProcessingControl(typeof(WindowingRenderer))]
+    [ProcessingControl(typeof(RegionGrowing))]
     public partial class ControlMip : UserControl
     {
         public ControlMip()

@@ -206,6 +206,7 @@
     <Compile Include="Processing\LogException.cs" />
     <Compile Include="Processing\ProcessingPipeline.cs" />
     <Compile Include="Processing\Renderer.cs" />
+    <Compile Include="Processing\Segmentation\RegionGrowing.cs" />
     <Compile Include="Processing\Slice.cs" />
     <Compile Include="Processing\TransferFunctions\TransferFunction1D.cs" />
     <Compile Include="Processing\TransferFunctions\TransferFunction1DRenderer.cs" />
