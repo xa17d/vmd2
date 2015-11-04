@@ -14,6 +14,9 @@ namespace Vmd2.Processing
         public int LengthY { get; private set; }
         public int LengthZ { get; private set; }
 
+        public double Maximum { get; set; }
+        public double Minimum { get; set; }
+
         public Image3D(int lengthZ, int lengthY, int lengthX)
         {
             data = new short[lengthX, lengthY, lengthZ];

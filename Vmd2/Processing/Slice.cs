@@ -26,6 +26,9 @@ namespace Vmd2.Processing
         protected override Image3D OnProcess(Image3D image, Progress progress)
         {
             Image3D result = new Image3D(1, image.LengthY, image.LengthX);
+            result.Minimum = image.Minimum;
+            result.Maximum = image.Maximum;
+
             SliceMax = image.LengthZ - 1;
 
             for (int y = 0; y < image.LengthY; y++)

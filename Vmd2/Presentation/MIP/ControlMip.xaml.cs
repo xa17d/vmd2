@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Vmd2.Processing.Mapping;
 using Vmd2.Processing.MIP;
 
 namespace Vmd2.Presentation.MIP
@@ -20,17 +21,13 @@ namespace Vmd2.Presentation.MIP
     /// Interaction logic for ControlMip.xaml
     /// </summary>
     [ProcessingControl(typeof(MipRenderer))]
+    [ProcessingControl(typeof(WindowingRenderer))]
     public partial class ControlMip : UserControl
     {
         public ControlMip()
         {
             InitializeComponent();
-
-            sliderCenter.Minimum = 0;
-            sliderCenter.Maximum = 1000;
-
-            sliderWidth.Minimum = 1;
-            sliderWidth.Maximum = 1000;
+            
         }
     }
 }

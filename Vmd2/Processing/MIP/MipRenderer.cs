@@ -18,6 +18,14 @@ namespace Vmd2.Processing.MIP
 
         public Windowing Window { private set; get; }
 
+        protected override void OnValidate(Image3D image)
+        {
+            base.OnValidate(image);
+
+            Window.MaxIntensity = image.Maximum;
+            Window.MinIntensity = image.Minimum;
+        }
+
         protected override void OnRenderPixel(Image3D image, DisplayImage display, int x, int y)
         {
             double mipValue = double.MinValue;

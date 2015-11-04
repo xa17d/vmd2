@@ -35,6 +35,8 @@ namespace Vmd2.Processing
                 using (var reader = new DicomReader(TestData.GetPath(Path)))
                 {
                     cache = reader.ReadImage3D(progress);
+                    cache.Minimum = reader.MinValue;
+                    cache.Maximum = reader.MaxValue;
                 }
             }
 

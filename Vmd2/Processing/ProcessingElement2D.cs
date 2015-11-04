@@ -91,7 +91,11 @@ namespace Vmd2.Processing
             if (useInputImageAsOutputImage)
             { imageOut = image; }
             else
-            { imageOut = new Image3D(image.LengthZ, image.LengthY, image.LengthX); }
+            {
+                imageOut = new Image3D(image.LengthZ, image.LengthY, image.LengthX);
+                imageOut.Minimum = image.Minimum;
+                imageOut.Maximum = image.Maximum;
+            }
 
             int delta = image.LengthY / threads.Length;
 
