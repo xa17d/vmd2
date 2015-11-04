@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace Vmd2.Processing
 {
-    interface IDisplay
+    interface INeedDisplay
     {
-        DisplayImage GetDisplay(int width, int height);
-        Point Marker { get; }
+        IDisplay Display { get; set; }
     }
 }
