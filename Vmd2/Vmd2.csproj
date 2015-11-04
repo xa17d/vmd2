@@ -143,6 +143,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Presentation\ControlMarkerTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Presentation\MIP\ControlMip.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -161,6 +165,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Presentation\ControlMarkerTest.xaml.cs">
+      <DependentUpon>ControlMarkerTest.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\MIP\ControlMip.xaml.cs">
       <DependentUpon>ControlMip.xaml</DependentUpon>
     </Compile>
@@ -186,6 +193,7 @@
     <Compile Include="Processing\Filters\GaussianFilter3x3.cs" />
     <Compile Include="Processing\Filters\GradientFilter3x3.cs" />
     <Compile Include="Processing\INeedDisplay.cs" />
+    <Compile Include="Processing\MarkerTest.cs" />
     <Compile Include="Processing\MIP\MipRenderer.cs" />
     <Compile Include="Processing\DVR\DvrRenderer.cs" />
     <Compile Include="Processing\Helper\ColorHelper.cs" />
