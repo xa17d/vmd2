@@ -8,7 +8,7 @@ using Vmd2.Logging;
 
 namespace Vmd2.Processing
 {
-    abstract class Renderer : ProcessingElement2D
+    abstract class Renderer : ProcessingElement2D, INeedDisplay
     {
         public Renderer() : base(8, true)
         {

@@ -18,7 +18,7 @@ namespace Vmd2.Presentation
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IDisplay
+    public partial class MainWindow : Window
     {
         public MainWindow()
         {
@@ -27,7 +27,7 @@ namespace Vmd2.Presentation
             pipeline = new ProcessingPipeline();
             pipeline.Add(new ImageLoader());
             pipeline.Add(new Slice());
-            pipeline.Add(new TransferFunction1DRenderer() { Display = this });
+            pipeline.Add(new TransferFunction1DRenderer() { Display = displayControl });
             pipeline.PipelineChanged += Pipeline_PipelineChanged;
 
             DispatcherTimer timer = new DispatcherTimer();
@@ -39,9 +39,7 @@ namespace Vmd2.Presentation
         private ProcessingPipeline pipeline;
         private bool pipelineDirty = false;
         private Thread processThread = null;
-
-        private DisplayImage display;
-
+        
         private void Timer_Tick(object sender, EventArgs e)
         {
             if (pipelineDirty)
@@ -73,10 +71,7 @@ namespace Vmd2.Presentation
             Log.H("Pipeline Start");
             pipeline.Process();
 
-            if (display != null)
-            {
-                Dispatcher.Invoke(display.Update);
-            }
+            displayControl.Update();
             Log.I("Done.");
         }
 
@@ -109,10 +104,10 @@ namespace Vmd2.Presentation
 
             var element = (ProcessingElement)Activator.CreateInstance(processingElementType);
 
-            var renderer = (element as Renderer);
-            if (renderer != null)
+            var elementWithDisplay = (element as INeedDisplay);
+            if (elementWithDisplay != null)
             {
-                renderer.Display = this;
+                elementWithDisplay.Display = displayControl;
             }
 
             pipeline.Add(element);
@@ -121,22 +116,6 @@ namespace Vmd2.Presentation
         private void buttonProcessPipeline_Click(object sender, RoutedEventArgs e)
         {
             ProcessPipelineAsync();
-        }
-
-        DisplayImage IDisplay.GetDisplay(int width, int height)
-        {
-            if (display == null || display.Width != width || display.Height != height)
-            {
-                Dispatcher.Invoke(
-                    () =>
-                    {
-                        display = new DisplayImage(width, height);
-                        displayImage.Source = display.GetBitmap();
-                    }
-                );
-            }
-
-            return display;
         }
     }
 }
