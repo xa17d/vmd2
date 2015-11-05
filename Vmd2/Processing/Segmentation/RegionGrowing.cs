@@ -11,16 +11,6 @@ namespace Vmd2.Processing.Segmentation
 {
     class RegionGrowing : Renderer
     {
-        private int[] tmpSeedPixel;
-        private double tmpDelta;
-        public RegionGrowing()
-        {
-            tmpSeedPixel = new int[3] { 90, 200, 0 };
-            tmpDelta = 3000;
-        }
-
-        private DisplayImage displayImage;
-
         protected override Image3D OnProcess(Image3D imageIn, Progress progress)
         {
             OnValidate(imageIn);
@@ -28,75 +18,116 @@ namespace Vmd2.Processing.Segmentation
             int w = (int)Math.Round(size.Width);
             int h = (int)Math.Round(size.Height);
 
-            displayImage = Display.GetDisplay(w, h);
-
             Image3D imageOut;
             imageOut = new Image3D(imageIn.LengthZ, imageIn.LengthY, imageIn.LengthX);
             imageOut.Minimum = imageIn.Minimum;
             imageOut.Maximum = imageIn.Maximum;
 
-            progress.Update(0.01);
+            double delta = 12;
+            Region.Pixel seedPixel = new Region.Pixel(116, 146, 6);
+            Region region = new Region(imageIn, imageOut, seedPixel, delta);
+            Thread thread = new Thread(new ThreadStart(region.Grow), 10000);
+            thread.Start();
 
-            bool[,,] pixelComputed = new bool[imageIn.LengthX, imageIn.LengthY, imageIn.LengthZ];
-
-            RegionObject region = new RegionObject(imageIn, imageOut, tmpSeedPixel, pixelComputed);
-
-            var stackSize = 10000000;
-            Thread thread = new Thread(new ParameterizedThreadStart(GrowRegion), stackSize);
-            thread.Start(region);
-
-            progress.Done();
+            while (thread.ThreadState == ThreadState.Running)
+            {
+                Thread.Sleep(10);
+            }
 
             return imageOut;
         }
 
-        private void GrowRegion(object o)
+        private class Region
         {
-            RegionObject region = (RegionObject)o;
-            GrowRegion(region.ImageIn, region.ImageOut, region.SeedPixel, region.PixelComputed);
-        }
+            private double delta;
+            private Image3D imageIn;
+            private Image3D imageOut;
 
-        private void GrowRegion(Image3D imageIn, Image3D imageOut, int[] seedPixel, bool[,,] pixelComputed)
-        {
-            int x = seedPixel[0];
-            int y = seedPixel[1];
-            int z = seedPixel[2];
+            private ISet<Pixel> pixelToCompute = new HashSet<Pixel>();
+            private ISet<Pixel> computedPixel = new HashSet<Pixel>();
 
-            imageOut[x, y, z] = imageIn[x, y, z];
-            pixelComputed[x, y, z] = true;
+            public Region(Image3D imageIn, Image3D imageOut, Pixel seedPixel, double delta)
+            {
+                this.imageIn = imageIn;
+                this.imageOut = imageOut;
+                this.delta = delta;
 
-            int i = z;
-            //for (int i = z - 1; i <= z + 1; i++)
-            //{
-                for (int j = y - 1; j <= y + 1; j++)
+                pixelToCompute.Add(seedPixel);
+            }
+
+            public void Grow()
+            {
+                while(pixelToCompute.Any())
                 {
-                    for (int k = x - 1; k <= x + 1; k++)
+                    Pixel pixel = pixelToCompute.First();
+
+                    imageOut[pixel.X, pixel.Y, pixel.Z] = imageIn[pixel.X, pixel.Y, pixel.Z];
+                    for (int i = pixel.Z - 1; i <= pixel.Z + 1; i++)
                     {
-                        if (i >= 0 && i < imageIn.LengthZ && j >= 0 && j < imageIn.LengthY && k >= 0 && k < imageIn.LengthX)
+                        for (int j = pixel.Y - 1; j <= pixel.Y + 1; j++)
                         {
-                            if (Math.Abs(imageIn[x, y, z] - imageIn[k, j, i]) <= tmpDelta && !pixelComputed[k, j, i])
+                            for (int k = pixel.X - 1; k <= pixel.X + 1; k++)
                             {
-                                GrowRegion(imageIn, imageOut, new int[3] { k, j, i }, pixelComputed);
+                                Pixel newPixel = new Pixel(k, j, i);
+                                if (!computedPixel.Contains(newPixel) && newPixel.IsExistingPixel(imageIn))
+                                {
+                                    if (Math.Abs(imageIn[pixel.X, pixel.Y, pixel.Z] - imageIn[k, j, i]) <= delta)
+                                    {
+                                        pixelToCompute.Add(newPixel);
+                                    }
+                                }
                             }
                         }
                     }
+
+                    pixelToCompute.Remove(pixel);
+                    computedPixel.Add(pixel);
                 }
-            //}
-        }
+            }
 
-        private class RegionObject
-        {
-            public Image3D ImageIn { get; private set; }
-            public Image3D ImageOut { get; private set; }
-            public int[] SeedPixel { get; private set; }
-            public bool[,,] PixelComputed { get; private set; }
-
-            public RegionObject(Image3D imageIn, Image3D imageOut, int[] seedPixel, bool[,,] pixelComputed)
+            public class Pixel
             {
-                this.ImageIn = imageIn;
-                this.ImageOut = imageOut;
-                this.SeedPixel = seedPixel;
-                this.PixelComputed = pixelComputed;
+                public int X { get; set; }
+                public int Y { get; set; }
+                public int Z { get; set; }
+
+                public Pixel(int x, int y, int z)
+                {
+                    X = x;
+                    Y = y;
+                    Z = z;
+                }
+
+                public bool IsExistingPixel(Image3D image)
+                {
+                    if(X < 0 || X >= image.LengthX || Y < 0 || Y >= image.LengthY || Z < 0 || Z >= image.LengthZ)
+                    {
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                public override int GetHashCode()
+                {
+                    return Z + Y * 10000 + X * 100000000;
+                }
+
+                public override bool Equals(object obj)
+                {
+                    if(obj == null)
+                    {
+                        return false;
+                    }
+
+                    Pixel p = obj as Pixel;
+                    if ((System.Object)p == null)
+                    {
+                        return false;
+                    }
+
+                    return (X == p.X) && (Y == p.Y) && (Z == p.Z);
+                }
             }
         }
 
