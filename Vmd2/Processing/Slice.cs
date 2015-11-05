@@ -16,6 +16,51 @@ namespace Vmd2.Processing
             set { if (value != sliceIndex) { sliceIndex = value; OnPropertyChanged(); } }
         }
 
+        private bool axisX = false;
+        public bool AxisX
+        {
+            get { return axisX; }
+            set
+            {
+                if (value != axisX)
+                {
+                    axisX = value;
+                    if (value) { AxisY = false; AxisZ = false; }
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool axisY = false;
+        public bool AxisY
+        {
+            get { return axisY; }
+            set
+            {
+                if (value != axisY)
+                {
+                    axisY = value;
+                    if (value) { AxisX = false; AxisZ = false; }
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool axisZ = true;
+        public bool AxisZ
+        {
+            get { return axisZ; }
+            set
+            {
+                if (value != axisZ)
+                {
+                    axisZ = value;
+                    if (value) { AxisX = false; AxisY = false; }
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private int sliceMax = 0;
         public int SliceMax
         {
@@ -29,13 +74,41 @@ namespace Vmd2.Processing
             result.Minimum = image.Minimum;
             result.Maximum = image.Maximum;
 
-            SliceMax = image.LengthZ - 1;
-
-            for (int y = 0; y < image.LengthY; y++)
+            if (axisX) // X-Axis
             {
-                for (int x = 0; x < image.LengthX; x++)
+                SliceMax = image.LengthX - 1;
+
+
+                for (int z = 0; z < image.LengthZ; z++)
                 {
-                    result[x, y, 0] = image[x, y, sliceIndex];
+                    for (int y = 0; y < image.LengthY; y++)
+                    {
+                        result[y, z, 0] = image[sliceIndex, y, z];
+                    }
+                }
+            }
+            else if (axisY) // Y-Axis
+            {
+                SliceMax = image.LengthY - 1;
+
+                for (int z = 0; z < image.LengthZ; z++)
+                {
+                    for (int x = 0; x < image.LengthX; x++)
+                    {
+                        result[x, z, 0] = image[x, sliceIndex, z];
+                    }
+                }
+            }
+            else if (axisZ) // Z-Axis
+            {
+                SliceMax = image.LengthZ - 1;
+
+                for (int y = 0; y < image.LengthY; y++)
+                {
+                    for (int x = 0; x < image.LengthX; x++)
+                    {
+                        result[x, y, 0] = image[x, y, sliceIndex];
+                    }
                 }
             }
 

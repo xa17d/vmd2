@@ -7,7 +7,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="50" d:DesignWidth="300">
     <StackPanel>
-        <TextBlock>Z-Slice:</TextBlock>
+        <StackPanel Orientation="Horizontal">
+            <RadioButton Margin="0,0,10,0" IsChecked="{Binding AxisX}">X-Axis</RadioButton>
+            <RadioButton Margin="0,0,10,0" IsChecked="{Binding AxisY}">Y-Axis</RadioButton>
+            <RadioButton Margin="0,0,10,0" IsChecked="{Binding AxisZ}">Z-Axis</RadioButton>
+        </StackPanel>
         <Slider SmallChange="1" Value="{Binding SliceIndex}" Maximum="{Binding SliceMax}" />
     </StackPanel>
 </UserControl>
