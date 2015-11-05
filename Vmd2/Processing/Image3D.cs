@@ -25,6 +25,14 @@ namespace Vmd2.Processing
             this.LengthZ = lengthZ;
         }
 
+        public Image3D EmptyCopy()
+        {
+            var result = new Image3D(LengthZ, LengthY, LengthX);
+            result.Minimum = Minimum;
+            result.Maximum = Maximum;
+            return result;
+        }
+
         public double this[int x, int y, int z]
         {
             get { return data[x, y, z]; }

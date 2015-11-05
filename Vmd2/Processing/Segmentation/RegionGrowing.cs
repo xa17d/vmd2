@@ -31,9 +31,7 @@ namespace Vmd2.Processing.Segmentation
             displayImage = Display.GetDisplay(w, h);
 
             Image3D imageOut;
-            imageOut = new Image3D(imageIn.LengthZ, imageIn.LengthY, imageIn.LengthX);
-            imageOut.Minimum = imageIn.Minimum;
-            imageOut.Maximum = imageIn.Maximum;
+            imageOut = imageIn.EmptyCopy();
 
             progress.Update(0.01);
 
