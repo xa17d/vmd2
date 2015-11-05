@@ -19,9 +19,7 @@ namespace Vmd2.Processing.Segmentation
             int h = (int)Math.Round(size.Height);
 
             Image3D imageOut;
-            imageOut = new Image3D(imageIn.LengthZ, imageIn.LengthY, imageIn.LengthX);
-            imageOut.Minimum = imageIn.Minimum;
-            imageOut.Maximum = imageIn.Maximum;
+            imageOut = imageIn.EmptyCopy();
 
             double delta = 12;
             Region.Pixel seedPixel = new Region.Pixel(116, 146, 6);
