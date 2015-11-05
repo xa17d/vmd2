@@ -65,19 +65,32 @@ namespace Vmd2.Processing
         public int SliceMax
         {
             get { return sliceMax; }
-            private set { if (value != sliceMax) { sliceMax = value; OnPropertyChanged(); } }
+            private set
+            {
+                if (value != sliceMax)
+                {
+                    sliceMax = value;
+
+                    OnPropertyChanged();
+                    if (sliceMax < sliceIndex)
+                    {
+                        SliceIndex = SliceMax;
+                    }
+                }
+            }
         }
 
         protected override Image3D OnProcess(Image3D image, Progress progress)
         {
-            Image3D result = new Image3D(1, image.LengthY, image.LengthX);
-            result.Minimum = image.Minimum;
-            result.Maximum = image.Maximum;
+            Image3D result;
 
             if (axisX) // X-Axis
             {
-                SliceMax = image.LengthX - 1;
+                result = new Image3D(1, image.LengthZ, image.LengthY);
+                result.Minimum = image.Minimum;
+                result.Maximum = image.Maximum;
 
+                SliceMax = image.LengthX - 1;
 
                 for (int z = 0; z < image.LengthZ; z++)
                 {
@@ -89,6 +102,10 @@ namespace Vmd2.Processing
             }
             else if (axisY) // Y-Axis
             {
+                result = new Image3D(1, image.LengthZ, image.LengthX);
+                result.Minimum = image.Minimum;
+                result.Maximum = image.Maximum;
+
                 SliceMax = image.LengthY - 1;
 
                 for (int z = 0; z < image.LengthZ; z++)
@@ -101,6 +118,10 @@ namespace Vmd2.Processing
             }
             else if (axisZ) // Z-Axis
             {
+                result = new Image3D(1, image.LengthY, image.LengthX);
+                result.Minimum = image.Minimum;
+                result.Maximum = image.Maximum;
+
                 SliceMax = image.LengthZ - 1;
 
                 for (int y = 0; y < image.LengthY; y++)
@@ -111,6 +132,7 @@ namespace Vmd2.Processing
                     }
                 }
             }
+            else { throw new LogException("no axis selected"); }
 
             return result;
         }
