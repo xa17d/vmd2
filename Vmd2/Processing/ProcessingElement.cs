@@ -23,12 +23,19 @@ namespace Vmd2.Processing
         private ProcessingPipeline pipeline;
         public ProcessingPipeline Pipeline { get { return pipeline; } set { if (value != pipeline) { pipeline = value; OnPropertyChanged(); } } }
 
+        public event EventHandler<ProcessEventArgs> PreProcessing;
+
         public Image3D Process(Image3D image)
         {
             using (var progress = Log.P(ToString()))
             {
                 try
                 {
+                    if (PreProcessing !=null)
+                    {
+                        PreProcessing(this, new ProcessEventArgs(image));
+                    }
+
                     return OnProcess(image, progress);
                 }
                 catch (ThreadAbortException)

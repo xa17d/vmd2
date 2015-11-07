@@ -21,7 +21,7 @@
         </Grid>
 
         <Canvas x:Name="canvasTf" Height="40">
-            <!--<Image Canvas.Top="0" Canvas.Left="0" Canvas.Right="0" Canvas.Bottom="0"></Image>-->
+            <Image Canvas.Top="0" Canvas.Left="0" Canvas.Right="0" Canvas.Bottom="0" Stretch="Fill" MouseLeftButtonDown="imageTfBackground_MouseLeftButtonDown" x:Name="imageTfBackground"></Image>
         </Canvas>
 
         <Grid>

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Vmd2.Processing;
 using Vmd2.Processing.TransferFunctions;
 
 namespace Vmd2.Presentation.TransferFunctions
@@ -25,6 +26,18 @@ namespace Vmd2.Presentation.TransferFunctions
         public ControlTransferFunction1DRenderer()
         {
             InitializeComponent();
+
+            DataContextChanged += OnDataContextChanged;
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            Element.PreProcessing += Element_PreProcessing;
+        }
+
+        private void Element_PreProcessing(object sender, ProcessEventArgs e)
+        {
+            controlTf.UpdateImage(e.Image);
         }
 
         private TransferFunction1DRenderer Element { get { return (TransferFunction1DRenderer)DataContext; } }

@@ -4,23 +4,23 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Vmd2.Processing.TransferFunctions;
+using System.Windows.Media;
 
-namespace Vmd2.Presentation.TransferFunctions
+namespace Vmd2.Processing.TransferFunctions
 {
-    class TransferFunction1DVm : NotifyPropertyChanged
+    class TransferFunction1DBuilder : NotifyPropertyChanged
     {
-        public TransferFunction1DVm()
+        public TransferFunction1DBuilder()
         {
             MinValue = 0;
             MaxValue = 1100;
         }
 
-        private ObservableCollection<TransferFunctionItem> items = new ObservableCollection<TransferFunctionItem>();
-        public ObservableCollection<TransferFunctionItem> Items { get { return items; } }
+        private ObservableCollection<TransferFunction1DItem> items = new ObservableCollection<TransferFunction1DItem>();
+        public ObservableCollection<TransferFunction1DItem> Items { get { return items; } }
 
-        private TransferFunctionItem currentItem;
-        public TransferFunctionItem CurrentItem
+        private TransferFunction1DItem currentItem;
+        public TransferFunction1DItem CurrentItem
         {
             get { return currentItem; }
             set
@@ -45,6 +45,15 @@ namespace Vmd2.Presentation.TransferFunctions
                     OnPropertyChanged();
                 }
             }
+        }
+
+        public static TransferFunction1DBuilder CreateTestBuilder()
+        {
+            var b = new TransferFunction1DBuilder();
+            b.Items.Add(new TransferFunction1DItem(0, Colors.Black));
+            b.Items.Add(new TransferFunction1DItem(1000, Colors.White));
+
+            return b;
         }
 
         private double maxValue;

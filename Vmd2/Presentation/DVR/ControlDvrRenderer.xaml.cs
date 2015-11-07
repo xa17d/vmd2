@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Vmd2.Processing;
 using Vmd2.Processing.DVR;
 
 namespace Vmd2.Presentation.DVR
@@ -25,6 +26,18 @@ namespace Vmd2.Presentation.DVR
         public ControlDvrRenderer()
         {
             InitializeComponent();
+
+            DataContextChanged += OnDataContextChanged;
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            Element.PreProcessing += Element_PreProcessing;
+        }
+
+        private void Element_PreProcessing(object sender, ProcessEventArgs e)
+        {
+            controlTf.UpdateImage(e.Image);
         }
 
         private DvrRenderer Element { get { return (DvrRenderer)DataContext; } }

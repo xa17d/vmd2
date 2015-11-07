@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Vmd2.Processing;
 using Vmd2.Processing.TransferFunctions;
 
 namespace Vmd2.Presentation.TransferFunctions
@@ -27,30 +28,84 @@ namespace Vmd2.Presentation.TransferFunctions
         public ControlTransferFunction1D()
         {
             InitializeComponent();
-            DataContext = new TransferFunction1DVm();
 
-            Vm.Items.CollectionChanged += Items_CollectionChanged;
-            Vm.PropertyChanged += Vm_PropertyChanged;
+            displayImage = new DisplayImage(500, 100);
+            imageTfBackground.Source = displayImage.GetBitmap();
 
-            Vm.Items.Add(new TransferFunctionItem(0, Colors.Black));
-            Vm.Items.Add(new TransferFunctionItem(1000, Colors.White));
+            DataContextChanged += OnDataContextChanged;
+            DataContext = TransferFunction1DBuilder.CreateTestBuilder();
 
-            Loaded += ControlTransferFunction1D_Loaded;
+            Loaded += OnLoaded;
         }
 
-        private void ControlTransferFunction1D_Loaded(object sender, RoutedEventArgs e)
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
-            //UpdateAll();
+            base.OnRenderSizeChanged(sizeInfo);
+
+            UpdateAll();
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            UpdateAll();
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.OldValue != null)
+            {
+                var b = (TransferFunction1DBuilder)e.OldValue;
+                b.Items.CollectionChanged -= Items_CollectionChanged;
+                b.PropertyChanged -= Vm_PropertyChanged;
+            }
+
+            if (e.NewValue != null)
+            {
+                var b = (TransferFunction1DBuilder)e.NewValue;
+                b.Items.CollectionChanged += Items_CollectionChanged;
+                b.PropertyChanged += Vm_PropertyChanged;
+
+                Items_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, b.Items));
+                UpdateAll();
+            }
+        }
+
+        private DisplayImage displayImage;
+        public void UpdateImage(Image3D image)
+        {
+            Histogram histogram = new Histogram(image, displayImage.Width);
+
+            TransferFunction1D tf = null;
+
+            Dispatcher.Invoke(
+                    () =>
+                    {
+                        tf = CreateTransferFunction();
+                    }
+                );
+
+            histogram.Render(displayImage, tf);
+
+            Dispatcher.Invoke(
+                () =>
+                {
+                    displayImage.Update();
+
+                    imageTfBackground.Width = canvasTf.ActualWidth;
+                    imageTfBackground.Height = canvasTf.ActualHeight;
+                    //UpdateAll();
+                }
+            );
         }
 
         private Brush brushStrokeSelected = new SolidColorBrush(Colors.OrangeRed);
-        private Brush brushStroke = new SolidColorBrush(Colors.Black);
+        private Brush brushStroke = new SolidColorBrush(Colors.Gray);
 
         public event EventHandler TransferFunctionChanged;
         private void InvokeTransferFunctionChanged()
         {
             var e = TransferFunctionChanged;
-            if (e!=null)
+            if (e != null)
             {
                 e(this, EventArgs.Empty);
             }
@@ -68,7 +123,7 @@ namespace Vmd2.Presentation.TransferFunctions
                         Stroke = new SolidColorBrush(Colors.Black),
                         DataContext = item,
                         Width = 8,
-                        Height = canvasTf.Height
+                        Height = 20 // canvasTf.Height
                     };
 
                     Canvas.SetLeft(rectangle, 0);
@@ -76,8 +131,8 @@ namespace Vmd2.Presentation.TransferFunctions
 
                     canvasTf.Children.Add(rectangle);
 
-                    var tfItem = (TransferFunctionItem)item;
-                    tfItem.UiElement = rectangle;
+                    var tfItem = (TransferFunction1DItem)item;
+                    tfItem.Tag = rectangle;
                     tfItem.PropertyChanged += TfItem_PropertyChanged;
                     rectangle.MouseDown += Rectangle_MouseDown;
                     rectangle.MouseUp += Rectangle_MouseUp;
@@ -90,7 +145,7 @@ namespace Vmd2.Presentation.TransferFunctions
             {
                 foreach (var item in e.OldItems)
                 {
-                    canvasTf.Children.Remove(((TransferFunctionItem)item).UiElement);
+                    canvasTf.Children.Remove((UIElement)((TransferFunction1DItem)item).Tag);
                 }
             }
 
@@ -106,7 +161,7 @@ namespace Vmd2.Presentation.TransferFunctions
             {
                 Mouse.Capture(rectangle);
                 mouseDownPosition = e.GetPosition(rectangle);
-                Vm.CurrentItem = rectangle.DataContext as TransferFunctionItem;
+                Builder.CurrentItem = rectangle.DataContext as TransferFunction1DItem;
             }
         }
 
@@ -116,8 +171,8 @@ namespace Vmd2.Presentation.TransferFunctions
 
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                double v = ((p.X - mouseDownPosition.X) / canvasTf.ActualWidth) * (Vm.MaxValue - Vm.MinValue) + Vm.MinValue;
-                Vm.CurrentItem.Value = v;
+                double v = ((p.X - mouseDownPosition.X) / canvasTf.ActualWidth) * (Builder.MaxValue - Builder.MinValue) + Builder.MinValue;
+                Builder.CurrentItem.Value = v;
             }
         }
 
@@ -136,25 +191,26 @@ namespace Vmd2.Presentation.TransferFunctions
             UpdateAll();
         }
 
-        private void Update(TransferFunctionItem tfItem)
+        private void Update(TransferFunction1DItem tfItem)
         {
             double x;
 
-            x = (tfItem.Value - Vm.MinValue) / (Vm.MaxValue - Vm.MinValue) * canvasTf.ActualWidth;
+            x = (tfItem.Value - Builder.MinValue) / (Builder.MaxValue - Builder.MinValue) * canvasTf.ActualWidth;
 
-            Canvas.SetLeft(tfItem.UiElement, x);
-            if (tfItem == Vm.CurrentItem)
+            var rectangle = (Rectangle)tfItem.Tag;
+            Canvas.SetLeft(rectangle, x);
+            if (tfItem == Builder.CurrentItem)
             {
-                tfItem.UiElement.StrokeThickness = 2;
-                tfItem.UiElement.Stroke = brushStrokeSelected;
+                rectangle.StrokeThickness = 2;
+                rectangle.Stroke = brushStrokeSelected;
             }
             else
             {
-                tfItem.UiElement.StrokeThickness = 1;
-                tfItem.UiElement.Stroke = brushStroke;
+                rectangle.StrokeThickness = 1;
+                rectangle.Stroke = brushStroke;
             }
 
-            tfItem.UiElement.Fill = new SolidColorBrush(tfItem.Color);
+            rectangle.Fill = new SolidColorBrush(tfItem.Color);
         }
 
         private void UpdateAll()
@@ -164,45 +220,58 @@ namespace Vmd2.Presentation.TransferFunctions
                 var rectangle = (item as Rectangle);
                 if (rectangle != null)
                 {
-                    Update((TransferFunctionItem)rectangle.DataContext);
+                    Update((TransferFunction1DItem)rectangle.DataContext);
                 }
             }
 
             InvokeTransferFunctionChanged();
         }
 
-        private TransferFunction1DVm Vm { get { return (DataContext as TransferFunction1DVm); } }
+        private TransferFunction1DBuilder Builder { get { return (DataContext as TransferFunction1DBuilder); } }
 
         private void ButtonItemAdd_Click(object sender, RoutedEventArgs e)
         {
             double value = 0;
-            if (Vm.Items.Count > 0)
+            if (Builder.Items.Count > 0)
             {
-                value = Vm.Items[Vm.Items.Count - 1].Value + 100;
+                value = Builder.Items[Builder.Items.Count - 1].Value + 100;
             }
 
-            var item = new TransferFunctionItem(value);
-            Vm.Items.Add(item);
-            Vm.CurrentItem = item;
+            var item = new TransferFunction1DItem(value);
+            Builder.Items.Add(item);
+            Builder.CurrentItem = item;
         }
 
         public TransferFunction1D CreateTransferFunction()
         {
-            return Vm.CreateTransferFunction();
+            return Builder.CreateTransferFunction();
         }
 
         public void AddItem(double value, Color color)
         {
-            Vm.Items.Add(new TransferFunctionItem(value, color));
+            Builder.Items.Add(new TransferFunction1DItem(value, color));
         }
 
         private void ButtonItemRemove_Click(object sender, RoutedEventArgs e)
         {
-            var item = Vm.CurrentItem;
+            var item = Builder.CurrentItem;
             if (item != null)
             {
-                Vm.CurrentItem = null;
-                Vm.Items.Remove(item);
+                Builder.CurrentItem = null;
+                Builder.Items.Remove(item);
+            }
+        }
+
+        private void imageTfBackground_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2) // double click
+            {
+                var x = e.GetPosition(canvasTf).X;
+                var value = x * (Builder.MaxValue - Builder.MinValue) / canvasTf.ActualWidth + Builder.MinValue;
+
+                var item = new TransferFunction1DItem(value, CreateTransferFunction().GetColor(value));
+                Builder.Items.Add(item);
+                Builder.CurrentItem = item;
             }
         }
     }
