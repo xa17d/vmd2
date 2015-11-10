@@ -24,7 +24,7 @@ namespace Vmd2.Processing.DVR
             for (int z = image.LengthZ - 1; z >= 0; z--)
             {
                 var color = tf.GetColor(image[x, y, z]);
-                voxelColor = ColorHelper.Blend(color, voxelColor, color.A / 255.0);
+                voxelColor = ColorHelper.BlendAlpha(color, voxelColor);
             }
 
             display.SetPixel(x, y, voxelColor);

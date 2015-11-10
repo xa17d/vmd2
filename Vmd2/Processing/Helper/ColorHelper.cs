@@ -24,6 +24,15 @@ namespace Vmd2.Processing.Helper
             return Color.FromArgb(a, r, g, b);
         }
 
+        public static Color BlendAlpha(Color color, Color backColor)
+        {
+            double amount = color.A / 255.0;
+            byte r = (byte)((color.R * amount) + backColor.R * (1 - amount));
+            byte g = (byte)((color.G * amount) + backColor.G * (1 - amount));
+            byte b = (byte)((color.B * amount) + backColor.B * (1 - amount));
+            return Color.FromArgb(255, r, g, b);
+        }
+
         public static Color Alpha(byte alpha, Color color)
         {
             return Color.FromArgb(alpha, color.R, color.G, color.B);
