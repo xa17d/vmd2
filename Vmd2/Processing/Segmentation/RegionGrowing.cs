@@ -23,7 +23,7 @@ namespace Vmd2.Processing.Segmentation
 
             double delta = 12;
             Region.Pixel seedPixel = new Region.Pixel(116, 146, 6);
-            Region region = new Region(imageIn, imageOut, seedPixel, delta);
+            Region region = new Region(imageIn, imageOut, seedPixel, delta, progress);
             Thread thread = new Thread(new ThreadStart(region.Grow), 10000);
             thread.Start();
 
@@ -40,15 +40,17 @@ namespace Vmd2.Processing.Segmentation
             private double delta;
             private Image3D imageIn;
             private Image3D imageOut;
+            private Progress progress;
 
             private ISet<Pixel> pixelToCompute = new HashSet<Pixel>();
             private ISet<Pixel> computedPixel = new HashSet<Pixel>();
 
-            public Region(Image3D imageIn, Image3D imageOut, Pixel seedPixel, double delta)
+            public Region(Image3D imageIn, Image3D imageOut, Pixel seedPixel, double delta, Progress progress)
             {
                 this.imageIn = imageIn;
                 this.imageOut = imageOut;
                 this.delta = delta;
+                this.progress = progress;
 
                 pixelToCompute.Add(seedPixel);
             }
@@ -80,6 +82,7 @@ namespace Vmd2.Processing.Segmentation
 
                     pixelToCompute.Remove(pixel);
                     computedPixel.Add(pixel);
+                    progress.Update(computedPixel.Count / (double)(computedPixel.Count + pixelToCompute.Count));
                 }
             }
 
