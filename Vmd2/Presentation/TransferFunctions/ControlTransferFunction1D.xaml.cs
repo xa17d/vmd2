@@ -57,6 +57,8 @@ namespace Vmd2.Presentation.TransferFunctions
                 var b = (TransferFunction1DBuilder)e.OldValue;
                 b.Items.CollectionChanged -= Items_CollectionChanged;
                 b.PropertyChanged -= Vm_PropertyChanged;
+
+                builder = null;
             }
 
             if (e.NewValue != null)
@@ -65,25 +67,23 @@ namespace Vmd2.Presentation.TransferFunctions
                 b.Items.CollectionChanged += Items_CollectionChanged;
                 b.PropertyChanged += Vm_PropertyChanged;
 
+                builder = b;
+
                 Items_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, b.Items));
                 UpdateAll();
             }
         }
 
+        private TransferFunction1DBuilder builder;
+        private TransferFunction1DBuilder Builder { get { return builder; } }
+
         private DisplayImage displayImage;
         public void UpdateImage(Image3D image)
         {
-            Histogram histogram = new Histogram(image, displayImage.Width);
+            Histogram histogram = new Histogram(Builder.MinValue, Builder.MaxValue, displayImage.Width);
+            histogram.FromImage(image);
 
-            TransferFunction1D tf = null;
-
-            Dispatcher.Invoke(
-                    () =>
-                    {
-                        tf = CreateTransferFunction();
-                    }
-                );
-
+            TransferFunction1D tf = CreateTransferFunction();
             histogram.Render(displayImage, tf);
 
             Dispatcher.Invoke(
@@ -226,8 +226,6 @@ namespace Vmd2.Presentation.TransferFunctions
 
             InvokeTransferFunctionChanged();
         }
-
-        private TransferFunction1DBuilder Builder { get { return (DataContext as TransferFunction1DBuilder); } }
 
         private void ButtonItemAdd_Click(object sender, RoutedEventArgs e)
         {

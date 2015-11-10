@@ -9,10 +9,6 @@ namespace Vmd2.Processing.TransferFunctions
 {
     class Histogram
     {
-        public Histogram(Image3D image, int count) : this(image.Minimum, image.Maximum, count)
-        {
-            FromImage(image);
-        }
 
         public Histogram(double minimum, double maximum, int count)
         {
@@ -82,6 +78,8 @@ namespace Vmd2.Processing.TransferFunctions
             }
 
             int histogramHeight = histogramSum * 4 / Count; // TODO: find a suitable height function
+
+            if (histogramHeight == 0) { histogramHeight = 1; } // avoid division by 0 error
 
             // draw histogram values
             int displayHeight = display.Height;
