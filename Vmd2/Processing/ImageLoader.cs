@@ -12,7 +12,7 @@ namespace Vmd2.Processing
     {
         private Image3D cache = null;
 
-        private string path = @"vtkBrain";
+        private string path = TestData.GetPath(@"vtkBrain");
         public string Path
         {
             get { return path; }
@@ -32,7 +32,7 @@ namespace Vmd2.Processing
         {
             if (cache == null)
             {
-                using (var reader = new DicomReader(TestData.GetPath(Path)))
+                using (var reader = new DicomReader(Path))
                 {
                     cache = reader.ReadImage3D(progress);
                     cache.Minimum = reader.MinValue;

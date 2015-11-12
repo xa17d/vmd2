@@ -27,9 +27,17 @@ namespace Vmd2.Presentation
             InitializeComponent();
         }
 
+        private ImageLoader Element { get { return (ImageLoader)DataContext; } }
+
+        private System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog();
+
         private void Button_SelectFolder_Click(object sender, RoutedEventArgs e)
         {
-
+            dialog.SelectedPath = Element.Path;
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Element.Path = dialog.SelectedPath;
+            }
         }
     }
 }
