@@ -29,15 +29,16 @@ namespace Vmd2.DataAccess
             }
             else
             {
-                throw new LogException("Can not find file or directory: "+path);
+                throw new LogException("Can not find file or directory: " + path);
             }
 
-            try {
+            try
+            {
                 reader.Update();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                Log.E("VTK Exception: "+e.Message);
+                Log.E("VTK Exception: " + e.Message);
             }
         }
 
@@ -66,6 +67,10 @@ namespace Vmd2.DataAccess
             {
                 throw new LogException("Image must have 3 dimensions!");
             }
+
+            // TODO: remove (allow max 1000 slices)
+            if (dimensions[2] > 1000) { dimensions[2] = 1000; }
+            // ---
 
             var image = new Image3D(dimensions[2], dimensions[1], dimensions[0]);
 

@@ -19,8 +19,6 @@ namespace Vmd2.Processing
 
         public Image3D(int lengthZ, int lengthY, int lengthX)
         {
-            if (lengthZ > 1000) { lengthZ = 1000; } // TODO: remove
-
             data = new short[lengthZ][,];
 
             for (int i = 0; i < lengthZ; i++)
