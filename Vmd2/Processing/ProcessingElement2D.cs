@@ -118,6 +118,9 @@ namespace Vmd2.Processing
                 }
             }
 
+            // allow other threads to start
+            Thread.Sleep(0);
+
             // run first range
             ProcessLines(firstRange);
 

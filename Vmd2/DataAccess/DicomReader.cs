@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,14 +13,32 @@ namespace Vmd2.DataAccess
 {
     class DicomReader : IDisposable
     {
-        public DicomReader(string directoryPath)
+        public DicomReader(string path)
         {
             this.MinValue = double.NaN;
             this.MaxValue = double.NaN;
 
             reader = vtkDICOMImageReader.New();
-            reader.SetDirectoryName(directoryPath);
-            reader.Update();
+            if (Directory.Exists(path))
+            {
+                reader.SetDirectoryName(path);
+            }
+            else if (File.Exists(path))
+            {
+                reader.SetFileName(path);
+            }
+            else
+            {
+                throw new LogException("Can not find file or directory: "+path);
+            }
+
+            try {
+                reader.Update();
+            }
+            catch(Exception e)
+            {
+                Log.E("VTK Exception: "+e.Message);
+            }
         }
 
         public void Dispose()

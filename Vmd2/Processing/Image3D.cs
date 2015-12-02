@@ -8,7 +8,7 @@ namespace Vmd2.Processing
 {
     public class Image3D
     {
-        private short[,,] data;
+        private short[][,] data;
 
         public int LengthX { get; private set; }
         public int LengthY { get; private set; }
@@ -19,7 +19,15 @@ namespace Vmd2.Processing
 
         public Image3D(int lengthZ, int lengthY, int lengthX)
         {
-            data = new short[lengthX, lengthY, lengthZ];
+            if (lengthZ > 1000) { lengthZ = 1000; } // TODO: remove
+
+            data = new short[lengthZ][,];
+
+            for (int i = 0; i < lengthZ; i++)
+            {
+                data[i] = new short[lengthX, lengthY];
+            }
+
             this.LengthX = lengthX;
             this.LengthY = lengthY;
             this.LengthZ = lengthZ;
@@ -35,8 +43,8 @@ namespace Vmd2.Processing
 
         public double this[int x, int y, int z]
         {
-            get { return data[x, y, z]; }
-            set { data[x, y, z] = (short)value; }
+            get { return data[z][x, y]; }
+            set { data[z][x, y] = (short)value; }
         }
 
         public double[,] GetArea(int x, int y, int z, int xLength, int yLength)
@@ -93,7 +101,7 @@ namespace Vmd2.Processing
                         {
                             area[i - x + xl, j - y + yl, k - z + zl] = 0;
                         }
-                        else if(k < 0 || k >= zLength)
+                        else if (k < 0 || k >= zLength)
                         {
                             area[i - x + xl, j - y + yl, k - z + zl] = 0;
                         }
