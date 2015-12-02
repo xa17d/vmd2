@@ -9,7 +9,7 @@ namespace Vmd2.Processing
     abstract class ProcessingElement3D : ProcessingElement2D
     {
         public ProcessingElement3D() : base() { }
-        public ProcessingElement3D(int threadCount, bool useInputImageAsOutputImage) : base(threadCount, useInputImageAsOutputImage) { }
+        public ProcessingElement3D(int threadCount) : base(threadCount) { }
 
         protected override void OnProcess2D(Image3D imageIn, Image3D imageOut, int x, int y)
         {

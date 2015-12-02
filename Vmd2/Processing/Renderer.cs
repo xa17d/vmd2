@@ -10,8 +10,13 @@ namespace Vmd2.Processing
 {
     abstract class Renderer : ProcessingElement2D, INeedDisplay
     {
-        public Renderer() : base(8, true)
+        public Renderer() : base(8)
         {
+        }
+
+        protected override Image3D GetOutputImage(Image3D imageIn)
+        {
+            return imageIn; // do not create new output image, use input instead, because it shouldn't be modified in a renderer
         }
 
         private IDisplay display;

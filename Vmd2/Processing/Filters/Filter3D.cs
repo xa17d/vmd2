@@ -11,7 +11,7 @@ namespace Vmd2.Processing.Filters
         private int zCount;
         private double divider;
 
-        public Filter3D(double[,,] filter) : base(8, false)
+        public Filter3D(double[,,] filter) : base(8)
         {
             this.filter = filter;
             xCount = filter.GetLength(0);

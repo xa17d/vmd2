@@ -10,17 +10,15 @@ namespace Vmd2.Processing
 {
     abstract class ProcessingElement2D : ProcessingElement
     {
-        public ProcessingElement2D(int threadCount, bool useInputImageAsOutputImage) : base()
+        public ProcessingElement2D(int threadCount) : base()
         {
             threads = new Thread[threadCount];
             this.ThreadCount = threadCount;
-            this.useInputImageAsOutputImage = useInputImageAsOutputImage;
         }
 
-        public ProcessingElement2D() : this(1, false) { }
+        public ProcessingElement2D() : this(1) { }
 
         private Thread[] threads;
-        private bool useInputImageAsOutputImage;
 
         public int ThreadCount
         {
@@ -85,15 +83,14 @@ namespace Vmd2.Processing
             public int Max;
         }
 
+        protected virtual Image3D GetOutputImage(Image3D imageIn)
+        {
+            return imageIn.EmptyCopy();
+        }
+
         protected override Image3D OnProcess(Image3D image, Progress progress)
         {
-            Image3D imageOut;
-            if (useInputImageAsOutputImage)
-            { imageOut = image; }
-            else
-            {
-                imageOut = image.EmptyCopy();
-            }
+            Image3D imageOut = GetOutputImage(image);
 
             int delta = image.LengthY / threads.Length;
 

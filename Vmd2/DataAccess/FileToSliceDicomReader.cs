@@ -55,11 +55,12 @@ namespace Vmd2.DataAccess
             slice0 = null;
             slicesDone++;
 
-            ThreadPool.SetMaxThreads(8, 8);
+            //ThreadPool.SetMaxThreads(8, 8);
 
             for (int z = 1; z < files.Length; z++)
             {
-                ThreadPool.QueueUserWorkItem(new WaitCallback(ReadSlice), new SliceInfo(files[z], z));
+                ReadSlice(new SliceInfo(files[z], z));
+                //ThreadPool.QueueUserWorkItem(new WaitCallback(ReadSlice), );
             }
 
             while (slicesDone != image.LengthZ)

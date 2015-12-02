@@ -10,7 +10,7 @@ namespace Vmd2.Processing.Filters
         private int yCount;
         private double divider;
 
-        public Filter2D(double[,] filter) : base(8, false)
+        public Filter2D(double[,] filter) : base(8)
         {
             this.filter = filter;
             xCount = filter.GetLength(0);
