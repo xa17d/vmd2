@@ -34,15 +34,34 @@ namespace Vmd2.Processing.TransferFunctions
 
         public void FromImage(Image3D image)
         {
-            for (int z = 0; z < image.LengthZ; z++)
+            if (image.LengthZ <= 25)
             {
-                for (int y = 0; y < image.LengthY; y++)
+                // full image
+                for (int z = 0; z < image.LengthZ; z++)
                 {
-                    for (int x = 0; x < image.LengthX; x++)
-                    {
-                        double voxel = image[x, y, z];
-                        histogramValues[GetHistogramIndex(voxel)]++;
-                    }
+                    HistogramFromSlice(image, z);
+                }
+            }
+            else
+            {
+                int delta = image.LengthZ / 25;
+                // from 25 slices
+                for (int z = 0; z < image.LengthZ; z += delta)
+                {
+                    HistogramFromSlice(image, z);
+                }
+            }
+
+        }
+
+        private void HistogramFromSlice(Image3D image, int slice)
+        {
+            for (int y = 0; y < image.LengthY; y++)
+            {
+                for (int x = 0; x < image.LengthX; x++)
+                {
+                    double voxel = image[x, y, slice];
+                    histogramValues[GetHistogramIndex(voxel)]++;
                 }
             }
         }
@@ -107,10 +126,12 @@ namespace Vmd2.Processing.TransferFunctions
                 }
                 for (int y = 3; y < (displayHeight - barHeight); y++)
                 {
+                    if (y >= display.Height) { break; }
                     display.SetPixel(x, y, Colors.Transparent);
                 }
                 for (int y = (displayHeight - barHeight); y < displayHeight; y++)
                 {
+                    if (y >= display.Height) { break; }
                     display.SetPixel(x, y, tfColor);
                 }
             }
