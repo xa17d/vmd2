@@ -116,6 +116,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataAccess\DicomReader.cs" />
+    <Compile Include="DataAccess\FileToSliceDicomReader.cs" />
     <Compile Include="DataAccess\TestData.cs" />
     <Compile Include="Logging\Log.cs" />
     <Compile Include="Logging\MessageType.cs" />

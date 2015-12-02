@@ -45,6 +45,18 @@ namespace Vmd2.Processing
             set { data[z][x, y] = (short)value; }
         }
 
+        public void CloneSlice(Image3D source, int sourceSlice, int destinationSlice)
+        {
+            if (source.LengthX != LengthX || source.LengthY != LengthY)
+            {
+                throw new ArgumentException("Slice dimensions must match!");
+            }
+            else
+            {
+                this.data[destinationSlice] = source.data[sourceSlice];
+            }
+        }
+
         public double[,] GetArea(int x, int y, int z, int xLength, int yLength)
         {
             if (xLength % 2 == 0 || yLength % 2 == 0)

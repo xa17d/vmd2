@@ -94,8 +94,6 @@ namespace Vmd2.DataAccess
                 progress.Update((z / (double)image.LengthZ));
             }
 
-            Log.I("Image loaded. min: " + min + "; max: " + max);
-
             this.MinValue = min;
             this.MaxValue = max;
 

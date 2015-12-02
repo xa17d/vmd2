@@ -27,17 +27,45 @@ namespace Vmd2.Processing
             }
         }
 
+        private bool combineFilesToSlices = false;
+        public bool CombineFilesToSlices
+        {
+            get { return combineFilesToSlices; }
+            set
+            {
+                if (value != combineFilesToSlices)
+                {
+                    combineFilesToSlices = value;
+                    cache = null;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         protected override Image3D OnProcess(Image3D image, Progress progress)
         {
             if (cache == null)
             {
-                using (var reader = new DicomReader(Path))
+                if (!CombineFilesToSlices)
                 {
-                    cache = reader.ReadImage3D(progress);
-                    cache.Minimum = reader.MinValue;
-                    cache.Maximum = reader.MaxValue;
+                    using (var reader = new DicomReader(Path))
+                    {
+                        cache = reader.ReadImage3D(progress);
+                        cache.Minimum = reader.MinValue;
+                        cache.Maximum = reader.MaxValue;
+                    }
                 }
+                else
+                {
+                    using (var reader = new FileToSliceDicomReader(Path))
+                    {
+                        cache = reader.ReadImage3D(progress);
+                        cache.Minimum = reader.MinValue;
+                        cache.Maximum = reader.MaxValue;
+                    }
+                }
+
+                Log.I("Image loaded. min: " + cache.Minimum + "; max: " + cache.Maximum);
             }
 
             return cache;
