@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Vmd2.Processing;
 using Vmd2.Processing.Filters;
 
 namespace Vmd2.Presentation.Filter
@@ -25,6 +26,7 @@ namespace Vmd2.Presentation.Filter
     [ProcessingControl(typeof(Hildreth2DFilter7x7))]
     [ProcessingControl(typeof(Gaussian3DFilter3x3))]
     [ProcessingControl(typeof(EdgeDFilter3x3))]
+    [ProcessingControl(typeof(TransformYView))]
     public partial class ControlFilter : UserControl
     {
         public ControlFilter()
