@@ -11,6 +11,61 @@ namespace Vmd2.Processing.Segmentation
 {
     class RegionGrowing : Renderer
     {
+        public RegionGrowing()
+        {
+            // default values
+            markerX = 116;
+            markerY = 146;
+            markerZ = 6;
+
+            deltaGlobal = 100;
+            deltaLocal = 25;
+
+            //TODO
+            maxDelta = 200;
+        }
+
+        private int markerX;
+        public int MarkerX
+        {
+            get { return markerX; }
+            set { if (value != markerX) { markerX = value; OnPropertyChanged(); } }
+        }
+
+        private int markerY;
+        public int MarkerY
+        {
+            get { return markerY; }
+            set { if (value != markerY) { markerY = value; OnPropertyChanged(); } }
+        }
+
+        private int markerZ;
+        public int MarkerZ
+        {
+            get { return markerZ; }
+            set { if (value != markerZ) { markerZ = value; OnPropertyChanged(); } }
+        }
+        
+        private double deltaGlobal;
+        public double DeltaGlobal
+        {
+            get { return deltaGlobal; }
+            set { deltaGlobal = value; OnPropertyChanged(); }
+        }
+
+        private double deltaLocal;
+        public double DeltaLocal
+        {
+            get { return deltaLocal; }
+            set { deltaLocal = value; OnPropertyChanged(); }
+        }
+
+        private double maxDelta;
+        public double MaxDelta
+        {
+            get { return maxDelta; }
+        }
+
         protected override Image3D OnProcess(Image3D imageIn, Progress progress)
         {
             OnValidate(imageIn);
@@ -21,9 +76,8 @@ namespace Vmd2.Processing.Segmentation
             Image3D imageOut;
             imageOut = imageIn.EmptyCopy();
 
-            double delta = 12;
-            Region.Pixel seedPixel = new Region.Pixel(116, 146, 6);
-            Region region = new Region(imageIn, imageOut, seedPixel, delta, progress);
+            Region.Pixel seedPixel = new Region.Pixel(markerX, markerY, markerZ);
+            Region region = new Region(imageIn, imageOut, seedPixel, deltaGlobal, deltaLocal, progress);
             Thread thread = new Thread(new ThreadStart(region.Grow), 10000);
             thread.Start();
 
@@ -37,7 +91,8 @@ namespace Vmd2.Processing.Segmentation
 
         private class Region
         {
-            private double delta;
+            private double deltaGlobal;
+            private double deltaLocal;
             private Image3D imageIn;
             private Image3D imageOut;
             private Progress progress;
@@ -45,11 +100,12 @@ namespace Vmd2.Processing.Segmentation
             private ISet<Pixel> pixelToCompute = new HashSet<Pixel>();
             private ISet<Pixel> computedPixel = new HashSet<Pixel>();
 
-            public Region(Image3D imageIn, Image3D imageOut, Pixel seedPixel, double delta, Progress progress)
+            public Region(Image3D imageIn, Image3D imageOut, Pixel seedPixel, double deltaGlobal, double deltaLocal, Progress progress)
             {
                 this.imageIn = imageIn;
                 this.imageOut = imageOut;
-                this.delta = delta;
+                this.deltaGlobal = deltaGlobal;
+                this.deltaLocal = deltaLocal;
                 this.progress = progress;
 
                 pixelToCompute.Add(seedPixel);
@@ -57,7 +113,14 @@ namespace Vmd2.Processing.Segmentation
 
             public void Grow()
             {
-                while(pixelToCompute.Any())
+                Pixel firstPixel = pixelToCompute.First();
+                var min = imageIn[firstPixel.X, firstPixel.Y, firstPixel.Z] - deltaGlobal;
+                var max = imageIn[firstPixel.X, firstPixel.Y, firstPixel.Z] + deltaGlobal;
+                pixelToCompute.Add(firstPixel);
+
+                double totalPixel = imageIn.LengthX * imageIn.LengthY * imageIn.LengthZ;
+
+                while (pixelToCompute.Any())
                 {
                     Pixel pixel = pixelToCompute.First();
 
@@ -71,7 +134,7 @@ namespace Vmd2.Processing.Segmentation
                                 Pixel newPixel = new Pixel(k, j, i);
                                 if (!computedPixel.Contains(newPixel) && newPixel.IsExistingPixel(imageIn))
                                 {
-                                    if (Math.Abs(imageIn[pixel.X, pixel.Y, pixel.Z] - imageIn[k, j, i]) <= delta)
+                                    if (imageIn[k, j, i] >= min && imageIn[k, j, i] <= max && Math.Abs(imageIn[pixel.X, pixel.Y, pixel.Z] - imageIn[k, j, i]) <= deltaLocal)
                                     {
                                         pixelToCompute.Add(newPixel);
                                     }
@@ -82,7 +145,7 @@ namespace Vmd2.Processing.Segmentation
 
                     pixelToCompute.Remove(pixel);
                     computedPixel.Add(pixel);
-                    progress.Update(computedPixel.Count / (double)(computedPixel.Count + pixelToCompute.Count));
+                    progress.Update(computedPixel.Count / totalPixel);
                 }
             }
 

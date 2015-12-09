@@ -177,6 +177,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Presentation\Segmentation\ControlRegionGrowing.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Presentation\TransferFunctions\ControlTransferFunction1D.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -197,6 +201,9 @@
       <DependentUpon>PeContainer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\ProcessingControl.cs" />
+    <Compile Include="Presentation\Segmentation\ControlRegionGrowing.xaml.cs">
+      <DependentUpon>ControlRegionGrowing.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\TransferFunctions\ControlTransferFunction1D.xaml.cs">
       <DependentUpon>ControlTransferFunction1D.xaml</DependentUpon>
     </Compile>

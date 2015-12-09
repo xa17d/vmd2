@@ -28,8 +28,7 @@ namespace Vmd2.Presentation.MIP
     {
         public ControlMip()
         {
-            InitializeComponent();
-            
+            InitializeComponent();     
         }
     }
 }
