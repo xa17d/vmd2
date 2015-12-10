@@ -114,9 +114,8 @@ namespace Vmd2.Processing.Segmentation
             public void Grow()
             {
                 Pixel firstPixel = pixelToCompute.First();
-                var min = imageIn[firstPixel.X, firstPixel.Y, firstPixel.Z] - deltaGlobal;
-                var max = imageIn[firstPixel.X, firstPixel.Y, firstPixel.Z] + deltaGlobal;
-                pixelToCompute.Add(firstPixel);
+                var min = imageIn[firstPixel.X, firstPixel.Y, firstPixel.Z] - deltaGlobal / 2;
+                var max = imageIn[firstPixel.X, firstPixel.Y, firstPixel.Z] + deltaGlobal / 2;
 
                 double totalPixel = imageIn.LengthX * imageIn.LengthY * imageIn.LengthZ;
 
@@ -134,7 +133,11 @@ namespace Vmd2.Processing.Segmentation
                                 Pixel newPixel = new Pixel(k, j, i);
                                 if (!computedPixel.Contains(newPixel) && newPixel.IsExistingPixel(imageIn))
                                 {
-                                    if (imageIn[k, j, i] >= min && imageIn[k, j, i] <= max && Math.Abs(imageIn[pixel.X, pixel.Y, pixel.Z] - imageIn[k, j, i]) <= deltaLocal)
+                                    if (imageIn[k, j, i] >= min 
+                                        && 
+                                        imageIn[k, j, i] <= max 
+                                        && 
+                                        Math.Abs(imageIn[pixel.X, pixel.Y, pixel.Z] - imageIn[k, j, i]) <= deltaLocal)
                                     {
                                         pixelToCompute.Add(newPixel);
                                     }
@@ -189,6 +192,14 @@ namespace Vmd2.Processing.Segmentation
                     {
                         return false;
                     }
+
+                    /*
+                    // inefficiency ???
+                    if(this.GetHashCode() != p.GetHashCode())
+                    {
+                        return false;
+                    }
+                    */
 
                     return (X == p.X) && (Y == p.Y) && (Z == p.Z);
                 }
