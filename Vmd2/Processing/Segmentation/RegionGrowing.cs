@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Vmd2.Logging;
+using Vmd2.Processing.Filters;
 
 namespace Vmd2.Processing.Segmentation
 {
@@ -25,47 +26,6 @@ namespace Vmd2.Processing.Segmentation
             maxDelta = 200;
         }
 
-        private int markerX;
-        public int MarkerX
-        {
-            get { return markerX; }
-            set { if (value != markerX) { markerX = value; OnPropertyChanged(); } }
-        }
-
-        private int markerY;
-        public int MarkerY
-        {
-            get { return markerY; }
-            set { if (value != markerY) { markerY = value; OnPropertyChanged(); } }
-        }
-
-        private int markerZ;
-        public int MarkerZ
-        {
-            get { return markerZ; }
-            set { if (value != markerZ) { markerZ = value; OnPropertyChanged(); } }
-        }
-        
-        private double deltaGlobal;
-        public double DeltaGlobal
-        {
-            get { return deltaGlobal; }
-            set { deltaGlobal = value; OnPropertyChanged(); }
-        }
-
-        private double deltaLocal;
-        public double DeltaLocal
-        {
-            get { return deltaLocal; }
-            set { deltaLocal = value; OnPropertyChanged(); }
-        }
-
-        private double maxDelta;
-        public double MaxDelta
-        {
-            get { return maxDelta; }
-        }
-
         protected override Image3D OnProcess(Image3D imageIn, Progress progress)
         {
             OnValidate(imageIn);
@@ -73,11 +33,18 @@ namespace Vmd2.Processing.Segmentation
             int w = (int)Math.Round(size.Width);
             int h = (int)Math.Round(size.Height);
 
-            Image3D imageOut;
-            imageOut = imageIn.EmptyCopy();
+            Image3D imageOut = imageIn.EmptyCopy();
+            Image3D imageEnhancedContrast = imageIn.EmptyCopy();
+
+            //TODO
+            if(true)
+            {
+                Filter2D filter = new ContrastEnhancement2DFilter3x3();
+                imageEnhancedContrast = filter.Process(imageEnhancedContrast);
+            }
 
             Region.Pixel seedPixel = new Region.Pixel(markerX, markerY, markerZ);
-            Region region = new Region(imageIn, imageOut, seedPixel, deltaGlobal, deltaLocal, progress);
+            Region region = new Region(imageIn, imageOut, imageEnhancedContrast, seedPixel, deltaGlobal, deltaLocal, progress);
             Thread thread = new Thread(new ThreadStart(region.Grow), 10000);
             thread.Start();
 
@@ -95,15 +62,17 @@ namespace Vmd2.Processing.Segmentation
             private double deltaLocal;
             private Image3D imageIn;
             private Image3D imageOut;
+            private Image3D imageEnhancedContrast;
             private Progress progress;
 
             private ISet<Pixel> pixelToCompute = new HashSet<Pixel>();
             private ISet<Pixel> computedPixel = new HashSet<Pixel>();
 
-            public Region(Image3D imageIn, Image3D imageOut, Pixel seedPixel, double deltaGlobal, double deltaLocal, Progress progress)
+            public Region(Image3D imageIn, Image3D imageOut, Image3D imageEnhancedContrast, Pixel seedPixel, double deltaGlobal, double deltaLocal, Progress progress)
             {
                 this.imageIn = imageIn;
                 this.imageOut = imageOut;
+                this.imageEnhancedContrast = imageEnhancedContrast;
                 this.deltaGlobal = deltaGlobal;
                 this.deltaLocal = deltaLocal;
                 this.progress = progress;
@@ -114,10 +83,10 @@ namespace Vmd2.Processing.Segmentation
             public void Grow()
             {
                 Pixel firstPixel = pixelToCompute.First();
-                var min = imageIn[firstPixel.X, firstPixel.Y, firstPixel.Z] - deltaGlobal / 2;
-                var max = imageIn[firstPixel.X, firstPixel.Y, firstPixel.Z] + deltaGlobal / 2;
+                var min = imageEnhancedContrast[firstPixel.X, firstPixel.Y, firstPixel.Z] - deltaGlobal / 2;
+                var max = imageEnhancedContrast[firstPixel.X, firstPixel.Y, firstPixel.Z] + deltaGlobal / 2;
 
-                double totalPixel = imageIn.LengthX * imageIn.LengthY * imageIn.LengthZ;
+                double increment = 1 / (imageIn.LengthX * imageIn.LengthY * imageIn.LengthZ);
 
                 while (pixelToCompute.Any())
                 {
@@ -133,11 +102,11 @@ namespace Vmd2.Processing.Segmentation
                                 Pixel newPixel = new Pixel(k, j, i);
                                 if (!computedPixel.Contains(newPixel) && newPixel.IsExistingPixel(imageIn))
                                 {
-                                    if (imageIn[k, j, i] >= min 
+                                    if (imageEnhancedContrast[k, j, i] >= min 
+                                        &&
+                                        imageEnhancedContrast[k, j, i] <= max 
                                         && 
-                                        imageIn[k, j, i] <= max 
-                                        && 
-                                        Math.Abs(imageIn[pixel.X, pixel.Y, pixel.Z] - imageIn[k, j, i]) <= deltaLocal)
+                                        Math.Abs(imageEnhancedContrast[pixel.X, pixel.Y, pixel.Z] - imageEnhancedContrast[k, j, i]) <= deltaLocal)
                                     {
                                         pixelToCompute.Add(newPixel);
                                     }
@@ -148,7 +117,8 @@ namespace Vmd2.Processing.Segmentation
 
                     pixelToCompute.Remove(pixel);
                     computedPixel.Add(pixel);
-                    progress.Update(computedPixel.Count / totalPixel);
+
+                    progress.UpdateIncrement(increment);
                 }
             }
 
@@ -209,6 +179,47 @@ namespace Vmd2.Processing.Segmentation
         protected override void OnRenderPixel(Image3D image, DisplayImage display, int x, int y)
         {
             throw new NotImplementedException();
+        }
+
+        private int markerX;
+        public int MarkerX
+        {
+            get { return markerX; }
+            set { if (value != markerX) { markerX = value; OnPropertyChanged(); } }
+        }
+
+        private int markerY;
+        public int MarkerY
+        {
+            get { return markerY; }
+            set { if (value != markerY) { markerY = value; OnPropertyChanged(); } }
+        }
+
+        private int markerZ;
+        public int MarkerZ
+        {
+            get { return markerZ; }
+            set { if (value != markerZ) { markerZ = value; OnPropertyChanged(); } }
+        }
+
+        private double deltaGlobal;
+        public double DeltaGlobal
+        {
+            get { return deltaGlobal; }
+            set { deltaGlobal = value; OnPropertyChanged(); }
+        }
+
+        private double deltaLocal;
+        public double DeltaLocal
+        {
+            get { return deltaLocal; }
+            set { deltaLocal = value; OnPropertyChanged(); }
+        }
+
+        private double maxDelta;
+        public double MaxDelta
+        {
+            get { return maxDelta; }
         }
     }
 }
