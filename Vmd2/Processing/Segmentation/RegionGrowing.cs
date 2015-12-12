@@ -34,26 +34,40 @@ namespace Vmd2.Processing.Segmentation
             int h = (int)Math.Round(size.Height);
 
             Image3D imageOut = imageIn.EmptyCopy();
-            Image3D imageEnhancedContrast = imageIn.EmptyCopy();
+            imageEnhancedContrast = imageIn.EmptyCopy();
 
             //TODO
             if(true)
             {
-                Filter2D filter = new ContrastEnhancement2DFilter3x3();
-                imageEnhancedContrast = filter.Process(imageEnhancedContrast);
+                filter = new ContrastEnhancement2DFilter3x3();
+                Thread threadFilter = new Thread(new ThreadStart(ProcessFilter));
+                threadFilter.Start();
+
+                while (threadFilter.ThreadState == ThreadState.Running)
+                {
+                    Thread.Sleep(50);
+                }
             }
 
             Region.Pixel seedPixel = new Region.Pixel(markerX, markerY, markerZ);
             Region region = new Region(imageIn, imageOut, imageEnhancedContrast, seedPixel, deltaGlobal, deltaLocal, progress);
-            Thread thread = new Thread(new ThreadStart(region.Grow), 10000);
-            thread.Start();
+            Thread threadGrow = new Thread(new ThreadStart(region.Grow));
+            threadGrow.Start();
 
-            while (thread.ThreadState == ThreadState.Running)
+            while (threadGrow.ThreadState == ThreadState.Running)
             {
-                Thread.Sleep(10);
+                Thread.Sleep(50);
             }
 
             return imageOut;
+        }
+
+        private Image3D imageEnhancedContrast;
+        private ProcessingElement filter;
+
+        private void ProcessFilter()
+        {
+            imageEnhancedContrast = filter.Process(imageEnhancedContrast);
         }
 
         private class Region
@@ -83,10 +97,10 @@ namespace Vmd2.Processing.Segmentation
             public void Grow()
             {
                 Pixel firstPixel = pixelToCompute.First();
-                var min = imageEnhancedContrast[firstPixel.X, firstPixel.Y, firstPixel.Z] - deltaGlobal / 2;
-                var max = imageEnhancedContrast[firstPixel.X, firstPixel.Y, firstPixel.Z] + deltaGlobal / 2;
+                var min = imageIn[firstPixel.X, firstPixel.Y, firstPixel.Z] - deltaGlobal / 2;
+                var max = imageIn[firstPixel.X, firstPixel.Y, firstPixel.Z] + deltaGlobal / 2;
 
-                double increment = 1 / (imageIn.LengthX * imageIn.LengthY * imageIn.LengthZ);
+                double increment = 1.0 / (imageIn.LengthX * imageIn.LengthY * imageIn.LengthZ);
 
                 while (pixelToCompute.Any())
                 {
@@ -102,9 +116,9 @@ namespace Vmd2.Processing.Segmentation
                                 Pixel newPixel = new Pixel(k, j, i);
                                 if (!computedPixel.Contains(newPixel) && newPixel.IsExistingPixel(imageIn))
                                 {
-                                    if (imageEnhancedContrast[k, j, i] >= min 
+                                    if (imageIn[k, j, i] >= min 
                                         &&
-                                        imageEnhancedContrast[k, j, i] <= max 
+                                        imageIn[k, j, i] <= max 
                                         && 
                                         Math.Abs(imageEnhancedContrast[pixel.X, pixel.Y, pixel.Z] - imageEnhancedContrast[k, j, i]) <= deltaLocal)
                                     {
