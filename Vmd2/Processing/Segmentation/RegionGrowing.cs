@@ -45,7 +45,7 @@ namespace Vmd2.Processing.Segmentation
             get { return markerZ; }
             set { if (value != markerZ) { markerZ = value; OnPropertyChanged(); } }
         }
-        
+
         private double deltaGlobal;
         public double DeltaGlobal
         {
@@ -77,14 +77,19 @@ namespace Vmd2.Processing.Segmentation
             imageOut = imageIn.EmptyCopy();
 
             Region.Pixel seedPixel = new Region.Pixel(markerX, markerY, markerZ);
+            if (!seedPixel.IsExistingPixel(imageIn))
+            {
+                throw new LogException("Seed pixel does not exist " + seedPixel.ToString());
+            }
             Region region = new Region(imageIn, imageOut, seedPixel, deltaGlobal, deltaLocal, progress);
-            Thread thread = new Thread(new ThreadStart(region.Grow), 10000);
+            /*Thread thread = new Thread(new ThreadStart(region.Grow), 10000);
             thread.Start();
 
             while (thread.ThreadState == ThreadState.Running)
             {
                 Thread.Sleep(10);
-            }
+            }*/
+            region.Grow();
 
             return imageOut;
         }
@@ -133,10 +138,10 @@ namespace Vmd2.Processing.Segmentation
                                 Pixel newPixel = new Pixel(k, j, i);
                                 if (!computedPixel.Contains(newPixel) && newPixel.IsExistingPixel(imageIn))
                                 {
-                                    if (imageIn[k, j, i] >= min 
-                                        && 
-                                        imageIn[k, j, i] <= max 
-                                        && 
+                                    if (imageIn[k, j, i] >= min
+                                        &&
+                                        imageIn[k, j, i] <= max
+                                        &&
                                         Math.Abs(imageIn[pixel.X, pixel.Y, pixel.Z] - imageIn[k, j, i]) <= deltaLocal)
                                     {
                                         pixelToCompute.Add(newPixel);
@@ -167,7 +172,7 @@ namespace Vmd2.Processing.Segmentation
 
                 public bool IsExistingPixel(Image3D image)
                 {
-                    if(X < 0 || X >= image.LengthX || Y < 0 || Y >= image.LengthY || Z < 0 || Z >= image.LengthZ)
+                    if (X < 0 || X >= image.LengthX || Y < 0 || Y >= image.LengthY || Z < 0 || Z >= image.LengthZ)
                     {
                         return false;
                     }
@@ -182,7 +187,7 @@ namespace Vmd2.Processing.Segmentation
 
                 public override bool Equals(object obj)
                 {
-                    if(obj == null)
+                    if (obj == null)
                     {
                         return false;
                     }
@@ -202,6 +207,11 @@ namespace Vmd2.Processing.Segmentation
                     */
 
                     return (X == p.X) && (Y == p.Y) && (Z == p.Z);
+                }
+
+                public override string ToString()
+                {
+                    return "(" + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";
                 }
             }
         }

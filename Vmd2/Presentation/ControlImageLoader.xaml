@@ -12,6 +12,6 @@
             <Button DockPanel.Dock="Right" Width="20" Click="Button_SelectFolder_Click">...</Button>
             <TextBox Text="{Binding Path}"></TextBox>
         </DockPanel>
-        <CheckBox IsChecked="{Binding CombineFilesToSlices}">Combine all files to slices</CheckBox>
+        <CheckBox IsChecked="{Binding CombineFilesToSlices}">Merge independent files</CheckBox>
     </StackPanel>
 </UserControl>

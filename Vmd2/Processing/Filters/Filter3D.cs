@@ -79,6 +79,11 @@ namespace Vmd2.Processing.Filters
         {
             if (activated)
             {
+                if (image.LengthX < 3 || image.LengthY < 3 || image.LengthZ < 3)
+                {
+                    throw new LogException("3D Filter need 3 slices minimum");
+                }
+
                 return base.OnProcess(image, progress);
             }
             else
