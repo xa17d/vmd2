@@ -24,11 +24,8 @@ namespace Vmd2.Presentation
         {
             InitializeComponent();
             Log.Control = controlLog;
-            pipeline = new ProcessingPipeline();
-            pipeline.Add(new ImageLoader());
-            pipeline.Add(new Slice());
-            pipeline.Add(new TransferFunction1DRenderer() { Display = displayControl });
-            pipeline.PipelineChanged += Pipeline_PipelineChanged;
+
+            pipelines = new PipelineExamples();
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(100);
@@ -36,10 +33,46 @@ namespace Vmd2.Presentation
             timer.Start();
         }
 
-        private ProcessingPipeline pipeline;
+        private PipelineExamples pipelines;
+        private ProcessingPipeline __pipeline;
+        public object Pipeline
+        {
+            get { return __pipeline; }
+            set
+            {
+                var newValue = (value as ProcessingPipeline);
+
+                if (newValue != __pipeline)
+                {
+                    if (__pipeline != null)
+                    {
+                        __pipeline.PipelineChanged -= Pipeline_PipelineChanged;
+                    }
+
+                    __pipeline = newValue;
+                    processingElements.ItemsSource = newValue;
+
+                    if (__pipeline != null)
+                    {
+                        foreach (var item in __pipeline)
+                        {
+                            if (item is INeedDisplay)
+                            {
+                                ((INeedDisplay)item).Display = displayControl;
+                            }
+                        }
+
+                        newValue.PipelineChanged += Pipeline_PipelineChanged;
+
+                        Pipeline_PipelineChanged(__pipeline, EventArgs.Empty);
+                    }
+                }
+            }
+        }
+
         private bool pipelineDirty = false;
         private Thread processThread = null;
-        
+
         private void Timer_Tick(object sender, EventArgs e)
         {
             if (pipelineDirty)
@@ -68,10 +101,14 @@ namespace Vmd2.Presentation
 
         private void ProcessPipeline()
         {
-            Log.H("Pipeline Start");
-            pipeline.Process();
+            var p = (ProcessingPipeline)Pipeline;
+
+            Log.H("Pipeline Start \""+p.Name+"\"");
+
+            if (p != null) { p.Process(); }
 
             displayControl.Update();
+
             Log.I("Done.");
         }
 
@@ -82,7 +119,10 @@ namespace Vmd2.Presentation
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            processingElements.ItemsSource = pipeline;
+            Pipeline = pipelines.Examples[0];
+
+            comboBoxPipelines.DataContext = this;
+            comboBoxPipelines.ItemsSource = pipelines.Examples;
 
             // Show ProcessingControls:
             foreach (var item in ProcessingControl.FindAllControls())
@@ -110,7 +150,7 @@ namespace Vmd2.Presentation
                 elementWithDisplay.Display = displayControl;
             }
 
-            pipeline.Add(element);
+            ((ProcessingPipeline)Pipeline).Add(element);
         }
 
         private void buttonProcessPipeline_Click(object sender, RoutedEventArgs e)

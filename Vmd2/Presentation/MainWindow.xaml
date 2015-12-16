@@ -27,6 +27,13 @@
         <p:ControlLog x:Name="controlLog" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" />
         <ScrollViewer Grid.Column="0" Grid.Row="0">
             <StackPanel>
+                <ComboBox x:Name="comboBoxPipelines" SelectedItem="{Binding Pipeline}" IsSynchronizedWithCurrentItem="True">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
                 <ItemsControl x:Name="processingElements" Grid.Column="0">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

@@ -200,6 +200,7 @@
     <Compile Include="Presentation\PeContainer.xaml.cs">
       <DependentUpon>PeContainer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Presentation\PipelineExamples.cs" />
     <Compile Include="Presentation\ProcessingControl.cs" />
     <Compile Include="Presentation\Segmentation\ControlRegionGrowing.xaml.cs">
       <DependentUpon>ControlRegionGrowing.xaml</DependentUpon>

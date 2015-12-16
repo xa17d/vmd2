@@ -10,6 +10,21 @@ namespace Vmd2.Processing
 {
     class ProcessingPipeline : ObservableCollection<ProcessingElement>
     {
+        public ProcessingPipeline(string name, IEnumerable<ProcessingElement> initialElements) : base()
+        {
+            this.Name = name;
+
+            if (initialElements != null)
+            {
+                foreach (var item in initialElements)
+                {
+                    Add(item);
+                }
+            }
+        }
+
+        public string Name { get; private set; }
+
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             base.OnCollectionChanged(e);
@@ -65,5 +80,10 @@ namespace Vmd2.Processing
         }
 
         public event EventHandler PipelineChanged;
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
