@@ -7,6 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
-        <local:ControlTransferFunction1D x:Name="controlTf" TransferFunctionChanged="TransferFunctionChanged"></local:ControlTransferFunction1D>
+        <local:ControlTransferFunction1D x:Name="controlTf"></local:ControlTransferFunction1D>
     </StackPanel>
 </UserControl>

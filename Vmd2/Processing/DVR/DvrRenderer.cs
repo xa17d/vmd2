@@ -11,11 +11,31 @@ namespace Vmd2.Processing.DVR
 {
     class DvrRenderer : Renderer
     {
-        private TransferFunction1D tf = TransferFunction1D.Default;
-        public TransferFunction1D TF
+        public DvrRenderer()
         {
-            get { return tf; }
-            set { if (value != tf) { tf = value; OnPropertyChanged(); } }
+            TF = TransferFunction1DBuilder.CreateTestBuilder();
+        }
+
+        private TransferFunction1DBuilder tfBuilder;
+        public TransferFunction1DBuilder TF
+        {
+            get { return tfBuilder; }
+            set
+            {
+                if (value != tfBuilder)
+                {
+                    tfBuilder = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private TransferFunction1D tf;
+
+        protected override void OnValidate(Image3D image)
+        {
+            base.OnValidate(image);
+            tf = tfBuilder.CreateTransferFunction();
         }
 
         protected override void OnRenderPixel(Image3D image, DisplayImage display, int x, int y)

@@ -33,6 +33,7 @@ namespace Vmd2.Presentation.DVR
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             Element.PreProcessing += Element_PreProcessing;
+            controlTf.DataContext = Element.TF;
         }
 
         private void Element_PreProcessing(object sender, ProcessEventArgs e)
@@ -41,10 +42,5 @@ namespace Vmd2.Presentation.DVR
         }
 
         private DvrRenderer Element { get { return (DvrRenderer)DataContext; } }
-
-        private void TransferFunctionChanged(object sender, EventArgs e)
-        {
-            Element.TF = controlTf.CreateTransferFunction();
-        }
     }
 }

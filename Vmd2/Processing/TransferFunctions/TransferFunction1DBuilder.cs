@@ -16,6 +16,12 @@ namespace Vmd2.Processing.TransferFunctions
             MaxValue = 1100;
         }
 
+        public TransferFunction1DBuilder Add(double value, Color color)
+        {
+            Items.Add(new TransferFunction1DItem(value, color));
+            return this;
+        }
+
         private ObservableCollection<TransferFunction1DItem> items = new ObservableCollection<TransferFunction1DItem>();
         public ObservableCollection<TransferFunction1DItem> Items { get { return items; } }
 
