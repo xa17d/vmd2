@@ -7,6 +7,7 @@ using System.Windows.Media;
 using Vmd2.DataAccess;
 using Vmd2.Processing;
 using Vmd2.Processing.DVR;
+using Vmd2.Processing.Segmentation;
 using Vmd2.Processing.TransferFunctions;
 
 namespace Vmd2.Presentation
@@ -45,6 +46,27 @@ namespace Vmd2.Presentation
                             }
                         }
                     ),
+                    new ProcessingPipeline(
+                        "Region Growing",
+                        new ProcessingElement[] {
+                            new ImageLoader() {
+                                Path = TestData.GetPath("vtkBrain")
+                            },
+                            new RegionGrowing()
+                            {
+                                DeltaGlobal = 200,
+                                DeltaLocal = 20
+                            },
+                            new DvrRenderer()
+                            {
+                                TF = new TransferFunction1DBuilder()
+                                    .Add(100, Color.FromArgb(0, 0,0,0))
+                                    .Add(440, Color.FromArgb(30, 0,0,255))
+                                    .Add(560, Color.FromArgb(30, 255,0,0))
+                                    .Add(900, Color.FromArgb(0, 0,0,0))
+                            }
+                        }
+                    )
                 };
         }
 

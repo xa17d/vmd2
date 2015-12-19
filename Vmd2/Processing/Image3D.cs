@@ -126,6 +126,27 @@ namespace Vmd2.Processing
             return area;
         }
 
+        public static Image3D operator -(Image3D minuend, Image3D subtrahend)
+        {
+            if(minuend.LengthX != subtrahend.LengthX || minuend.LengthY != subtrahend.LengthY || minuend.LengthZ != subtrahend.LengthZ)
+            {
+                throw new LogException("Dimensions do not match!");
+            }
+
+            Image3D result = minuend.EmptyCopy();
+            for (int z = 0; z < minuend.LengthZ; z++)
+            {
+                for (int y = 0; y < minuend.LengthY; y++)
+                {
+                    for (int x = 0; x < minuend.LengthX; x++)
+                    {
+                        result[x, y, z] = minuend[x, y, z] - subtrahend[x, y, z];
+                    }
+                }
+            }
+            return result;
+        }
+
         public static string InfoString(Image3D image)
         {
             if (image == null) { return "null"; }

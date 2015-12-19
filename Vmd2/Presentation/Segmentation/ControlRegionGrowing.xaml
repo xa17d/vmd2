@@ -11,6 +11,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1.5*" />
@@ -27,12 +28,13 @@
             <TextBox Text="{Binding MarkerZ}" Width="60"></TextBox>
         </StackPanel>
 
-        <TextBlock VerticalAlignment="Center" Grid.Row="1" Grid.Column="0">Global Delta:</TextBlock>
-        <Slider x:Name="sliderGlobal" Grid.Row="1" Grid.Column="1" SmallChange="10" LargeChange="100" Minimum="1" Maximum="{Binding MaxDelta}" Value="{Binding DeltaGlobal}" />
-        <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding DeltaGlobal}"></TextBox>
+        <CheckBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding FilterActivated}">Contrast-Enhancement-Filter Activated</CheckBox>
+        <TextBlock VerticalAlignment="Center" Grid.Row="2" Grid.Column="0">Global Delta:</TextBlock>
+        <Slider x:Name="sliderGlobal" Grid.Row="2" Grid.Column="1" SmallChange="10" LargeChange="100" Minimum="1" Maximum="{Binding MaxDelta}" Value="{Binding DeltaGlobal}" />
+        <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding DeltaGlobal}"></TextBox>
 
-        <TextBlock VerticalAlignment="Center" Grid.Row="2" Grid.Column="0">Local Delta:</TextBlock>
-        <Slider x:Name="sliderLocal" Grid.Row="2" Grid.Column="1" SmallChange="10" LargeChange="100" Minimum="1" Maximum="{Binding MaxDelta}" Value="{Binding DeltaLocal}" />
-        <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding DeltaLocal}"></TextBox>
+        <TextBlock VerticalAlignment="Center" Grid.Row="3" Grid.Column="0">Local Delta:</TextBlock>
+        <Slider x:Name="sliderLocal" Grid.Row="3" Grid.Column="1" SmallChange="10" LargeChange="100" Minimum="1" Maximum="{Binding MaxDelta}" Value="{Binding DeltaLocal}" />
+        <TextBox Grid.Row="3" Grid.Column="2" Text="{Binding DeltaLocal}"></TextBox>
     </Grid>
 </UserControl>

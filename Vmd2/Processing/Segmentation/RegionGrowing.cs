@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Vmd2.Logging;
+using Vmd2.Processing.Filters;
 
 namespace Vmd2.Processing.Segmentation
 {
@@ -66,6 +67,16 @@ namespace Vmd2.Processing.Segmentation
             get { return maxDelta; }
         }
 
+        private bool filterActivated = true;
+        public bool FilterActivated
+        {
+            get { return filterActivated;  }
+            set { filterActivated = value; OnPropertyChanged(); }
+        }
+
+        private Image3D imageOut;
+        private Image3D imageEnhanced;
+
         protected override Image3D OnProcess(Image3D imageIn, Progress progress)
         {
             OnValidate(imageIn);
@@ -73,22 +84,27 @@ namespace Vmd2.Processing.Segmentation
             int w = (int)Math.Round(size.Width);
             int h = (int)Math.Round(size.Height);
 
-            Image3D imageOut;
             imageOut = imageIn.EmptyCopy();
+            imageEnhanced = imageIn;
 
             Region.Pixel seedPixel = new Region.Pixel(markerX, markerY, markerZ);
             if (!seedPixel.IsExistingPixel(imageIn))
             {
                 throw new LogException("Seed pixel does not exist " + seedPixel.ToString());
             }
-            Region region = new Region(imageIn, imageOut, seedPixel, deltaGlobal, deltaLocal, progress);
-            /*Thread thread = new Thread(new ThreadStart(region.Grow), 10000);
-            thread.Start();
 
-            while (thread.ThreadState == ThreadState.Running)
+            if(filterActivated)
             {
-                Thread.Sleep(10);
-            }*/
+                Thread threadFilter = new Thread(new ThreadStart(ProcessFilter));
+                threadFilter.Start();
+
+                while(threadFilter.ThreadState == ThreadState.Running)
+                {
+                    Thread.Sleep(100);
+                }
+            }
+
+            Region region = new Region(imageIn, imageOut, imageEnhanced, seedPixel, deltaGlobal, deltaLocal, progress);
             region.Grow();
 
             return imageOut;
@@ -100,15 +116,17 @@ namespace Vmd2.Processing.Segmentation
             private double deltaLocal;
             private Image3D imageIn;
             private Image3D imageOut;
+            private Image3D imageEnhanced;
             private Progress progress;
 
             private ISet<Pixel> pixelToCompute = new HashSet<Pixel>();
             private ISet<Pixel> computedPixel = new HashSet<Pixel>();
 
-            public Region(Image3D imageIn, Image3D imageOut, Pixel seedPixel, double deltaGlobal, double deltaLocal, Progress progress)
+            public Region(Image3D imageIn, Image3D imageOut, Image3D imageEnhanced, Pixel seedPixel, double deltaGlobal, double deltaLocal, Progress progress)
             {
                 this.imageIn = imageIn;
                 this.imageOut = imageOut;
+                this.imageEnhanced = imageEnhanced;
                 this.deltaGlobal = deltaGlobal;
                 this.deltaLocal = deltaLocal;
                 this.progress = progress;
@@ -119,10 +137,10 @@ namespace Vmd2.Processing.Segmentation
             public void Grow()
             {
                 Pixel firstPixel = pixelToCompute.First();
-                var min = imageIn[firstPixel.X, firstPixel.Y, firstPixel.Z] - deltaGlobal / 2;
-                var max = imageIn[firstPixel.X, firstPixel.Y, firstPixel.Z] + deltaGlobal / 2;
+                var min = imageEnhanced[firstPixel.X, firstPixel.Y, firstPixel.Z] - deltaGlobal / 2;
+                var max = imageEnhanced[firstPixel.X, firstPixel.Y, firstPixel.Z] + deltaGlobal / 2;
 
-                double totalPixel = imageIn.LengthX * imageIn.LengthY * imageIn.LengthZ;
+                double increment = 1.0 / (imageIn.LengthX * imageIn.LengthY * imageIn.LengthZ);
 
                 while (pixelToCompute.Any())
                 {
@@ -138,11 +156,11 @@ namespace Vmd2.Processing.Segmentation
                                 Pixel newPixel = new Pixel(k, j, i);
                                 if (!computedPixel.Contains(newPixel) && newPixel.IsExistingPixel(imageIn))
                                 {
-                                    if (imageIn[k, j, i] >= min
+                                    if (imageEnhanced[k, j, i] >= min
                                         &&
-                                        imageIn[k, j, i] <= max
+                                        imageEnhanced[k, j, i] <= max
                                         &&
-                                        Math.Abs(imageIn[pixel.X, pixel.Y, pixel.Z] - imageIn[k, j, i]) <= deltaLocal)
+                                        Math.Abs(imageEnhanced[pixel.X, pixel.Y, pixel.Z] - imageEnhanced[k, j, i]) <= deltaLocal)
                                     {
                                         pixelToCompute.Add(newPixel);
                                     }
@@ -153,7 +171,7 @@ namespace Vmd2.Processing.Segmentation
 
                     pixelToCompute.Remove(pixel);
                     computedPixel.Add(pixel);
-                    progress.Update(computedPixel.Count / totalPixel);
+                    progress.UpdateIncrement(increment);
                 }
             }
 
@@ -182,7 +200,8 @@ namespace Vmd2.Processing.Segmentation
 
                 public override int GetHashCode()
                 {
-                    return Z + Y * 10000 + X * 100000000;
+                    //max image slize resolution for efficiency: 2048x2048
+                    return Z * 4194304 + Y * 2048 + X;
                 }
 
                 public override bool Equals(object obj)
@@ -214,6 +233,12 @@ namespace Vmd2.Processing.Segmentation
                     return "(" + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";
                 }
             }
+        }
+
+        private void ProcessFilter()
+        {
+            imageEnhanced = new ContrastEnhancement2DFilter3x3().Process(imageEnhanced);
+            imageEnhanced = imageOut - imageEnhanced;
         }
 
         protected override void OnRenderPixel(Image3D image, DisplayImage display, int x, int y)
