@@ -16,6 +16,8 @@ namespace Vmd2.Processing.Mapping
         }
         
         public Windowing Window { private set; get; }
+        public double WindowCenter { set { Window.WindowCenter = value; } }
+        public double WindowWidth { set { Window.WindowWidth = value; } }
 
         protected override void OnValidate(Image3D image)
         {

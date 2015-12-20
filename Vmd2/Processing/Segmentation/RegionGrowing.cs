@@ -74,9 +74,6 @@ namespace Vmd2.Processing.Segmentation
             set { filterActivated = value; OnPropertyChanged(); }
         }
 
-        private Image3D imageOut;
-        private Image3D imageEnhanced;
-
         protected override Image3D OnProcess(Image3D imageIn, Progress progress)
         {
             OnValidate(imageIn);
@@ -84,8 +81,8 @@ namespace Vmd2.Processing.Segmentation
             int w = (int)Math.Round(size.Width);
             int h = (int)Math.Round(size.Height);
 
-            imageOut = imageIn.EmptyCopy();
-            imageEnhanced = imageIn;
+            Image3D imageOut = imageIn.EmptyCopy();
+            Image3D imageEnhanced = imageIn;
 
             Region.Pixel seedPixel = new Region.Pixel(markerX, markerY, markerZ);
             if (!seedPixel.IsExistingPixel(imageIn))
@@ -95,13 +92,8 @@ namespace Vmd2.Processing.Segmentation
 
             if(filterActivated)
             {
-                Thread threadFilter = new Thread(new ThreadStart(ProcessFilter));
-                threadFilter.Start();
-
-                while(threadFilter.ThreadState == ThreadState.Running)
-                {
-                    Thread.Sleep(100);
-                }
+                imageEnhanced = new ContrastEnhancement2DFilter3x3().Process(imageEnhanced);
+                imageEnhanced = imageOut - imageEnhanced;
             }
 
             Region region = new Region(imageIn, imageOut, imageEnhanced, seedPixel, deltaGlobal, deltaLocal, progress);
@@ -233,12 +225,6 @@ namespace Vmd2.Processing.Segmentation
                     return "(" + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";
                 }
             }
-        }
-
-        private void ProcessFilter()
-        {
-            imageEnhanced = new ContrastEnhancement2DFilter3x3().Process(imageEnhanced);
-            imageEnhanced = imageOut - imageEnhanced;
         }
 
         protected override void OnRenderPixel(Image3D image, DisplayImage display, int x, int y)
