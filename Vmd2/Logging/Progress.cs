@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Vmd2.Logging
 {
+    /// <summary>
+    /// Progress-Object that can be used to update progress information
+    /// </summary>
     class Progress : IDisposable
     {
         public Progress()
@@ -16,11 +19,19 @@ namespace Vmd2.Logging
             this.start = DateTime.Now;
         }
 
+        /// <summary>
+        /// Set new progress
+        /// </summary>
+        /// <param name="progress">Set Progress. Must be 0..1</param>
         public void Update(double progress)
         {
             this.progress = progress;
         }
 
+        /// <summary>
+        /// Thread safe increment the progress by a delta value
+        /// </summary>
+        /// <param name="delta">delta</param>
         public void UpdateIncrement(double delta)
         {
             lock (lockObject)
@@ -29,6 +40,9 @@ namespace Vmd2.Logging
             }
         }
         
+        /// <summary>
+        /// Stops the progress info
+        /// </summary>
         public void Dispose()
         {
             var end = DateTime.Now;
@@ -40,11 +54,17 @@ namespace Vmd2.Logging
             this.TimeMilliseconds = (end - start).TotalMilliseconds;
         }
 
+        /// <summary>
+        /// Call when process is done
+        /// </summary>
         public void Done()
         {
             status = ProgressStatus.Done;
         }
 
+        /// <summary>
+        /// Call when process is aborted
+        /// </summary>
         public void Abort()
         {
             status = ProgressStatus.Aborted;

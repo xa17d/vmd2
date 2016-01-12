@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Vmd2.Presentation
 {
+    /// <summary>
+    /// Attribute that can be used to connect a View with a ProcessingElement
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     class ProcessingControl : Attribute
     {

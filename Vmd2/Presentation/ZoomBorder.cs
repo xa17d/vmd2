@@ -11,6 +11,9 @@ using System.Windows.Media;
 namespace Vmd2.Presentation
 {
     // source: http://stackoverflow.com/questions/741956/pan-zoom-image
+    /// <summary>
+    /// Allow pan and Zoom
+    /// </summary>
     public class ZoomBorder : Border
     {
         private UIElement child = null;

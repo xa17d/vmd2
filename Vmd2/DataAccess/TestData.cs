@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Vmd2.DataAccess
 {
+    /// <summary>
+    /// Helper to find paths relative to the EXE Directory
+    /// </summary>
     static class TestData
     {
         private static string ExeDirectory

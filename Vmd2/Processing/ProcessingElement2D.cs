@@ -8,6 +8,10 @@ using Vmd2.Logging;
 
 namespace Vmd2.Processing
 {
+    /// <summary>
+    /// Splits the workload of an input-image into multiple threads.
+    /// Implement OnProcess2D
+    /// </summary>
     abstract class ProcessingElement2D : ProcessingElement
     {
         public ProcessingElement2D(int threadCount) : base()
@@ -136,6 +140,13 @@ namespace Vmd2.Processing
             return imageOut;
         }
 
+        /// <summary>
+        /// Implement to process image. Is called for every x and y value of the input image
+        /// </summary>
+        /// <param name="imageIn">input image</param>
+        /// <param name="imageOut">output image</param>
+        /// <param name="x">x</param>
+        /// <param name="y">y</param>
         protected abstract void OnProcess2D(Image3D imageIn, Image3D imageOut, int x, int y);
     }
 }

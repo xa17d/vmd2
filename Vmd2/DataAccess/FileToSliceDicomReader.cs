@@ -10,6 +10,9 @@ using Vmd2.Processing;
 
 namespace Vmd2.DataAccess
 {
+    /// <summary>
+    /// Read in a folder of DICOM files and merge them to a single 3D image, even if they are not connected according to the DICOM header
+    /// </summary>
     class FileToSliceDicomReader : IDisposable
     {
         public FileToSliceDicomReader(string path)

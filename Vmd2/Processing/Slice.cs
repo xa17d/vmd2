@@ -7,9 +7,13 @@ using Vmd2.Logging;
 
 namespace Vmd2.Processing
 {
+    /// <summary>
+    /// Cuts out one slice of an 3D image
+    /// </summary>
     class Slice : ProcessingElement
     {
         private int sliceIndex = 0;
+
         public int SliceIndex
         {
             get { return sliceIndex; }

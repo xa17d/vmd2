@@ -8,6 +8,9 @@ using Vmd2.Logging;
 
 namespace Vmd2.Processing
 {
+    /// <summary>
+    /// ProcessingElement that renders a 3D-Image to an 2D-Display
+    /// </summary>
     abstract class Renderer : ProcessingElement2D, INeedDisplay
     {
         public Renderer() : base(8)
@@ -20,6 +23,9 @@ namespace Vmd2.Processing
         }
 
         private IDisplay display;
+        /// <summary>
+        /// Display on which the result is rendered
+        /// </summary>
         public IDisplay Display
         {
             get { return display; }

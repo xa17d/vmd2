@@ -11,8 +11,15 @@ using Vmd2.Processing;
 
 namespace Vmd2.DataAccess
 {
+    /// <summary>
+    /// Reads in a folder with DICOM files or a single DICOM file
+    /// </summary>
     class DicomReader : IDisposable
     {
+        /// <summary>
+        /// Initialize the reader
+        /// </summary>
+        /// <param name="path">Path of the DICOM file or folder</param>
         public DicomReader(string path)
         {
             this.MinValue = double.NaN;
@@ -49,7 +56,13 @@ namespace Vmd2.DataAccess
 
         private vtkDICOMImageReader reader;
 
+        /// <summary>
+        /// Minimum Value of the read image
+        /// </summary>
         public double MinValue { get; private set; }
+        /// <summary>
+        /// Maximum Value of the read image
+        /// </summary>
         public double MaxValue { get; private set; }
 
         public Image3D ReadImage3D(Progress progress)

@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Vmd2.Processing
 {
+    /// <summary>
+    /// Pipline that contains multiple ProcessingElements that are processed one after one.
+    /// </summary>
     class ProcessingPipeline : ObservableCollection<ProcessingElement>
     {
         public ProcessingPipeline(string name, IEnumerable<ProcessingElement> initialElements) : base()
@@ -66,6 +69,9 @@ namespace Vmd2.Processing
             }
         }
 
+        /// <summary>
+        /// Process the whole Pipeline
+        /// </summary>
         public void Process()
         {
             Image3D image = null;
@@ -79,6 +85,9 @@ namespace Vmd2.Processing
             catch (LogException) { }
         }
 
+        /// <summary>
+        /// Occurs when an element in the pipeline changes
+        /// </summary>
         public event EventHandler PipelineChanged;
 
         public override string ToString()

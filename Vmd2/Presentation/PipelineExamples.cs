@@ -14,6 +14,9 @@ using Vmd2.Processing.TransferFunctions;
 
 namespace Vmd2.Presentation
 {
+    /// <summary>
+    /// Contains prepared example Pipelines
+    /// </summary>
     class PipelineExamples
     {
         public PipelineExamples()
